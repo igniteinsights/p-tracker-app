@@ -1,0 +1,27 @@
+.lock {
+  min-height: 100vh; max-width: 480px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: calc(var(--safe-top) + 24px) var(--gutter) calc(var(--safe-bottom) + 24px); background: var(--bg); text-align: center;
+}
+.lock__title { font-size: 24px; font-weight: 600; letter-spacing: -0.01em; }
+.lock__hint { font-size: 15px; color: var(--muted); margin: 6px 0 22px; }
+.lock__error { min-height: 40px; margin-top: 14px; font-size: 14px; color: var(--danger); text-align: center; }
+.lock__forgot { font-size: 13px; color: var(--muted); min-height: 64px; width: 100%; }
+
+.keypad { width: 100%; max-width: 300px; margin: 0 auto; }
+.keypad__dots { display: flex; justify-content: center; gap: 14px; margin-bottom: 24px; }
+.keypad__dot { width: 12px; height: 12px; border-radius: 50%; box-shadow: inset 0 0 0 1.5px var(--muted); }
+.keypad__dot--on { background: var(--ink); box-shadow: none; }
+.keypad__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.keypad__key {
+  height: 64px; border-radius: 50%; width: 64px; justify-self: center; font-size: 24px; font-weight: 500;
+  background: var(--surface); border: 1px solid var(--line);
+}
+.keypad__key:active:not(:disabled) { background: var(--berry-soft); }
+.keypad__key:disabled { opacity: 0.4; cursor: default; }
+.keypad__key--quiet { background: transparent; border-color: transparent; font-size: 22px; color: var(--muted); }
+.keypad__extra { display: flex; align-items: center; justify-content: center; }
+
+.pin-sheet__prompt { font-size: 15px; color: #4A4148; margin: -2px 0 18px; text-align: center; }
+.pin-sheet__next { margin-top: 18px; min-height: 50px; }
+.privacy__statement { font-size: 14px; color: #4A4148; line-height: 1.45; margin: 0 0 10px; }
+.privacy__delete { color: var(--danger); }

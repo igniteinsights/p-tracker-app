@@ -150,3 +150,24 @@ test('cycle history exclusions and the calendar intimacy filter', async ({ page 
   await expect(page.locator('.day--hit-intimacy.day--today')).toBeVisible();
   await expect(page.locator('.month__count').filter({ hasText: '1 day' }).first()).toBeVisible();
 });
+
+test('PIN lock hides the app on reopen until the PIN is entered', async ({ page }) => {
+  await page.goto('/');
+  await page.getByRole('button', { name: 'Settings' }).click();
+  await expect(page.getByText(/stored only on this phone/)).toBeVisible();
+  await page.getByRole('switch', { name: /PIN lock/ }).click();
+  const sheet = page.getByRole('dialog', { name: 'Set a PIN' });
+  for (const d of '2468') await sheet.getByRole('button', { name: d, exact: true }).click();
+  await sheet.getByRole('button', { name: 'Next' }).click();
+  for (const d of '2468') await sheet.getByRole('button', { name: d, exact: true }).click();
+  await sheet.getByRole('button', { name: 'Turn on PIN lock' }).click();
+  await expect(page.getByText('PIN lock turned on')).toBeVisible();
+
+  await page.reload();
+  await expect(page.getByRole('heading', { name: 'p-tracker is locked' })).toBeVisible();
+  await expect(page.getByRole('navigation')).toHaveCount(0);
+  for (const d of '1111') await page.getByRole('button', { name: d, exact: true }).click();
+  await expect(page.getByText(/Wrong PIN/)).toBeVisible();
+  for (const d of '2468') await page.getByRole('button', { name: d, exact: true }).click();
+  await expect(page.getByRole('navigation')).toBeVisible();
+});

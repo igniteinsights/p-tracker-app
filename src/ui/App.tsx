@@ -8,6 +8,7 @@ import { CalendarScreen } from './calendar/CalendarScreen';
 import { LogSheet } from './log/LogSheet';
 import { SettingsScreen } from './settings/SettingsScreen';
 import { CycleHistory } from './history/CycleHistory';
+import { LockGate } from './lock/LockGate';
 import { UpdatePrompt } from '../pwa/UpdatePrompt';
 import { IosInstallHint } from '../pwa/IosInstallHint';
 import { InstallBanner } from '../pwa/InstallBanner';
@@ -24,6 +25,7 @@ export function App() {
 
   return (
     <ToastProvider>
+      <LockGate meta={data.meta}>
       <div className="app">
         <InstallBanner dismissedAt={data.meta.installDismissedAt} />
         <main className="screen">
@@ -51,6 +53,7 @@ export function App() {
         <UpdatePrompt />
         <IosInstallHint dismissed={data.meta.iosHintDismissed} />
       </div>
+      </LockGate>
     </ToastProvider>
   );
 }

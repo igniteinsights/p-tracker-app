@@ -12,6 +12,7 @@ import { Toggle } from '../common/Toggle';
 import { useToast } from '../common/Toast';
 import { backupNudge } from './backupNudge';
 import { ImportFlow } from './ImportFlow';
+import { PrivacySection } from './PrivacySection';
 import './settings.css';
 
 function range(min: number, max: number) {
@@ -107,6 +108,8 @@ export function SettingsScreen({ data, onOpenHistory }: { data: DataState; onOpe
         </div>
       </div>
 
+      <PrivacySection meta={meta} hasData={hasData} onExport={() => void exportJson()} onDeleteAll={() => setDeleting(true)} />
+
       <div className="group">
         <h2 className="group__title">About</h2>
         <div className="list">
@@ -116,9 +119,6 @@ export function SettingsScreen({ data, onOpenHistory }: { data: DataState; onOpe
         <p className="settings__disclaimer">Predictions are estimates based on your past cycles. They are not a reliable form of contraception.</p>
       </div>
 
-      <button type="button" className="btn btn--quiet btn--block settings__delete" disabled={!hasData} onClick={() => setDeleting(true)}>
-        Delete all data
-      </button>
 
       {importing && <ImportFlow hasData={hasData} onClose={() => setImporting(false)} />}
       {deleting && (

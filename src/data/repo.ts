@@ -2,15 +2,24 @@ import type { ISODate } from '../domain/dates';
 import { entryKey, normaliseEntries } from '../domain/entries';
 import { DEFAULT_SETTINGS, type Entry, type EntryType, type FlagType, type NewEntry, type Settings } from '../domain/types';
 import type { TrackerDB } from './db';
+import type { LockAfter } from '../pwa/pin';
 
 export interface Meta {
   lastBackupAt: string | null;
   storagePersisted: boolean;
   iosHintDismissed: boolean;
   installDismissedAt: string | null;
+  /** Salted PBKDF2 hash of the PIN; null when the PIN lock is off */
+  pinHash: string | null;
+  pinSalt: string | null;
+  pinLength: number | null;
+  lockAfter: LockAfter;
 }
 
-export const DEFAULT_META: Meta = { lastBackupAt: null, storagePersisted: false, iosHintDismissed: false, installDismissedAt: null };
+export const DEFAULT_META: Meta = {
+  lastBackupAt: null, storagePersisted: false, iosHintDismissed: false, installDismissedAt: null,
+  pinHash: null, pinSalt: null, pinLength: null, lockAfter: '1m',
+};
 
 export interface DayDraft {
   periodStart: boolean;

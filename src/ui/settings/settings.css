@@ -1,7 +1,6 @@
 .settings__nudge { background: var(--berry-soft); color: var(--berry); border-radius: var(--r-control); padding: 11px 13px; font-size: 14px; line-height: 1.4; margin-bottom: 18px; }
 .settings__select { border: 0; background: transparent; color: var(--muted); font-size: 14px; min-height: 44px; text-align: right; max-width: 55%; }
 .settings__disclaimer { font-size: 13px; color: var(--muted); line-height: 1.45; margin-top: 10px; }
-.settings__delete { color: var(--danger); margin-top: 6px; }
 .list__item:disabled { opacity: 0.45; cursor: default; }
 .list .toggle-row { padding: 10px 14px; background: var(--surface); }
 
