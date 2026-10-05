@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { buildCalendarIndex, dayAriaLabel, dayInfo, monthCells, monthRange } from './monthModel';
+import { buildCalendarIndex, dayAriaLabel, dayInfo, filterCount, matchesFilter, monthCells, monthRange } from './monthModel';
+import { addDays } from '../../domain/dates';
 import { predict } from '../../domain/predict';
 import { DEFAULT_SETTINGS, type NewEntry } from '../../domain/types';
 
@@ -60,5 +61,38 @@ describe('buildCalendarIndex', () => {
     const sidx = buildCalendarIndex(old, sp, DEFAULT_SETTINGS, today);
     expect(sidx.predicted.size).toBe(0);
     expect(sidx.fertile.size).toBe(0);
+  });
+});
+
+describe('possible start days', () => {
+  it('outlines the likely range around the next start without replacing predicted days', () => {
+    const starts: NewEntry[] = [];
+    let d = '2026-04-01';
+    starts.push({ date: d, type: 'period-start' });
+    for (const g of [26, 27, 28, 28, 29, 31]) { d = addDays(d, g); starts.push({ date: d, type: 'period-start' }); }
+    const p = predict(starts, DEFAULT_SETTINGS, today)!; // next 15 Oct, likely 14–16 Oct
+    const idx = buildCalendarIndex(starts, p, DEFAULT_SETTINGS, today);
+    expect([...idx.possible]).toEqual(['2026-10-14']);
+    expect(idx.predicted.has('2026-10-15')).toBe(true);
+    expect(dayAriaLabel('2026-10-14', dayInfo('2026-10-14', idx, today))).toBe('14 October 2026, possible period start');
+  });
+});
+
+describe('calendar filters', () => {
+  const p = predict(entries, DEFAULT_SETTINGS, today);
+  const idx = buildCalendarIndex(entries, p, DEFAULT_SETTINGS, today);
+
+  it('matches days for each filter', () => {
+    expect(matchesFilter(dayInfo('2026-10-02', idx, today), 'intimacy')).toBe(true);
+    expect(matchesFilter(dayInfo('2026-10-03', idx, today), 'intimacy')).toBe(false);
+    expect(matchesFilter(dayInfo('2026-10-03', idx, today), 'notes')).toBe(true);
+    expect(matchesFilter(dayInfo('2026-09-20', idx, today), 'period')).toBe(true);
+    expect(matchesFilter(dayInfo('2026-10-17', idx, today), 'period')).toBe(true); // predicted
+  });
+
+  it('counts logged days per month, not predictions', () => {
+    expect(filterCount({ year: 2026, month: 10 }, idx, today, 'intimacy')).toBe(1);
+    expect(filterCount({ year: 2026, month: 9 }, idx, today, 'period')).toBe(5);
+    expect(filterCount({ year: 2026, month: 10 }, idx, today, 'period')).toBe(0);
   });
 });
