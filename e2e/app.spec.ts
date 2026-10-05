@@ -19,7 +19,7 @@ test('import MyDays, log a day, add a note, export a backup', async ({ page }) =
   await expect(page.getByText('Imported 14 entries')).toBeVisible();
 
   await page.getByRole('button', { name: 'Today', exact: true }).click();
-  await expect(page.getByText('Cycles logged')).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Recent cycles' })).toBeVisible();
   await page.getByRole('button', { name: 'Intimacy', exact: true }).click();
   await expect(page.getByText('Intimacy logged')).toBeVisible();
 

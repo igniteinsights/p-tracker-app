@@ -30,7 +30,7 @@ function fullDate(d: ISODate): string {
   return `${day} ${MONTHS[m - 1].slice(0, 3)} ${y}`;
 }
 
-function rangeText(earliest: ISODate, latest: ISODate): string {
+export function rangeText(earliest: ISODate, latest: ISODate): string {
   if (earliest.slice(0, 7) === latest.slice(0, 7)) return `${Number(earliest.slice(8))}–${formatDayMonth(latest)}`;
   return `${formatDayMonth(earliest)} – ${formatDayMonth(latest)}`;
 }

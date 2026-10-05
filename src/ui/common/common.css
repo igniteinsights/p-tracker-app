@@ -46,6 +46,7 @@
 }
 /* Lift above the "Update ready" banner when it is showing */
 body:has(.banner:not(.banner--top)) .toast-region { bottom: calc(var(--nav-h) + var(--safe-bottom) + 76px); }
+body:has(.dock) .toast-region { bottom: calc(var(--nav-h) + var(--safe-bottom) + 76px); }
 /* With a sheet or dialog open, sit at the top so Save and dialog buttons stay visible */
 body:has(.layer) .toast-region.toast-region { top: calc(var(--safe-top) + 12px); bottom: auto; }
 .toast {

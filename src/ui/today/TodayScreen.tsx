@@ -1,6 +1,7 @@
 import { formatLong, type ISODate } from '../../domain/dates';
 import type { DataState } from '../../data/useData';
-import { FactGrid } from './FactGrid';
+import { ComingUpList } from './ComingUpList';
+import { RecentCycles } from './RecentCycles';
 import { QuickLog } from './QuickLog';
 import { Ribbon } from './Ribbon';
 import { statusLine } from './ribbonModel';
@@ -15,8 +16,8 @@ interface TodayScreenProps {
 }
 
 export function TodayScreen({ data, onOpenCalendar, onOpenLog, onOpenSettings, onOpenHistory }: TodayScreenProps) {
-  const { prediction: p, today, entries } = data;
-  const quickLog = <QuickLog entries={entries} today={today} onNote={() => onOpenLog(today, true)} />;
+  const { prediction: p, today, entries, settings } = data;
+  const quickLog = <div className="dock"><QuickLog entries={entries} today={today} onNote={() => onOpenLog(today, true)} /></div>;
 
   if (!p) {
     return (
@@ -45,7 +46,8 @@ export function TodayScreen({ data, onOpenCalendar, onOpenLog, onOpenSettings, o
       <p className="today__status">{statusLine(p)}</p>
       {p.stale && <p className="today__hint">Log the first day of your most recent period to start predictions again.</p>}
       {!p.stale && !p.irregular && <Ribbon prediction={p} onOpen={onOpenCalendar} />}
-      <FactGrid prediction={p} onOpenHistory={onOpenHistory} />
+      <ComingUpList prediction={p} />
+      <RecentCycles entries={entries} settings={settings} today={today} onOpenHistory={onOpenHistory} />
       {quickLog}
     </section>
   );
