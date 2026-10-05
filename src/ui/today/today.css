@@ -11,8 +11,8 @@
 .ribbon__tile { height: 60px; border-radius: var(--r-tile); background: var(--tile); }
 .ribbon__tile--past { background: var(--tile-past); }
 .ribbon__tile--period { background: var(--berry); }
-.ribbon__tile--fertile { background: repeating-linear-gradient(135deg, var(--lilac) 0 2px, var(--tile) 2px 5px); }
-.ribbon__tile--ovulation { background: var(--lilac); }
+.ribbon__tile--fertile { background: repeating-linear-gradient(135deg, var(--c-fertile) 0 2px, var(--t-fertile) 2px 5px); }
+.ribbon__tile--ovulation { background: var(--c-fertile); }
 .ribbon__tile--today { background: var(--ink); height: 80px; border-radius: 4px; }
 .ribbon__labels { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); margin-top: 18px; }
 
@@ -28,7 +28,7 @@
 .upcoming__aside { font-size: 14px; color: var(--muted); white-space: nowrap; }
 .upcoming__swatch { width: 10px; height: 10px; border-radius: 3px; flex: none; }
 .upcoming__swatch--period { background: var(--berry); }
-.upcoming__swatch--fertile { background: repeating-linear-gradient(135deg, var(--lilac) 0 2px, var(--surface) 2px 4px); box-shadow: inset 0 0 0 1px var(--lilac); }
+.upcoming__swatch--fertile { background: repeating-linear-gradient(135deg, var(--c-fertile) 0 2px, var(--t-fertile) 2px 4px); }
 .upcoming__swatch--last { background: var(--berry-soft); box-shadow: inset 0 0 0 1px #E3CCDA; }
 
 .recent { margin-bottom: 12px; }

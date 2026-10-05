@@ -10,6 +10,25 @@
   --berry-soft: #F1E3EC;
   --lilac: #C7A6BD;
   --teal: #1F6E73;
+
+  /* Cycle stages: validated for colour-blind separation between neighbouring stages */
+  --c-period: #B0457E;
+  --c-follicular: #3F7FD0;
+  --c-fertile: #C07A12;
+  --c-luteal: #3E4E8C;
+  --t-follicular: color-mix(in srgb, var(--c-follicular) 20%, var(--bg));
+  --t-luteal: color-mix(in srgb, var(--c-luteal) 22%, var(--bg));
+  --t-fertile: color-mix(in srgb, var(--c-fertile) 20%, var(--bg));
+  --t-fertile-stripe: color-mix(in srgb, var(--c-fertile) 30%, var(--bg));
+  --t-ovulation: color-mix(in srgb, var(--c-fertile) 42%, var(--bg));
+  --f-follicular: color-mix(in srgb, var(--c-follicular) 13%, var(--bg));
+  --f-luteal: color-mix(in srgb, var(--c-luteal) 14%, var(--bg));
+  --f-fertile: color-mix(in srgb, var(--c-fertile) 14%, var(--bg));
+  --f-fertile-stripe: color-mix(in srgb, var(--c-fertile) 22%, var(--bg));
+  --f-ovulation: color-mix(in srgb, var(--c-fertile) 30%, var(--bg));
+  --predicted-outline: color-mix(in srgb, var(--c-period) 55%, var(--bg));
+  --hatch-fertile: repeating-linear-gradient(135deg, var(--t-fertile-stripe) 0 2px, var(--t-fertile) 2px 6px);
+  --hatch-fertile-future: repeating-linear-gradient(135deg, var(--f-fertile-stripe) 0 2px, var(--f-fertile) 2px 6px);
   --teal-soft: #DCEDEE;
   --danger: #A12A2A;
 

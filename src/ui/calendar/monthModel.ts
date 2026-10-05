@@ -1,7 +1,7 @@
-import { addDays, daysInMonth, MONTHS, pad2, weekdayIndex, type ISODate } from '../../domain/dates';
+import { addDays, daysInMonth, diffDays, MONTHS, pad2, weekdayIndex, type ISODate } from '../../domain/dates';
 import { buildCycles } from '../../domain/cycles';
 import { averagePeriodLength, periodLengthOf, upcomingPeriods, type Prediction } from '../../domain/predict';
-import type { NewEntry, Settings } from '../../domain/types';
+import { CYCLE_RANGE, type NewEntry, type Settings } from '../../domain/types';
 
 export interface MonthRef { year: number; month: number }
 
@@ -37,6 +37,34 @@ export interface CalendarIndex {
   note: Set<ISODate>;
   /** Days in the likely range for the next start that aren't already predicted period days */
   possible: Set<ISODate>;
+  /** Cycle stage of each day, where it can be estimated */
+  phase: Map<ISODate, Phase>;
+}
+
+export type Phase = 'period' | 'follicular' | 'fertile' | 'ovulation' | 'luteal';
+
+/** Ovulation belongs to the fertile run for banding and labels. */
+export const phaseGroup = (p: Phase | null | undefined) => (p === 'ovulation' ? 'fertile' : p ?? null);
+
+export const PHASE_NAMES: Record<Exclude<Phase, 'ovulation'>, string> = {
+  period: 'Period',
+  follicular: 'Follicular',
+  fertile: 'Fertile',
+  luteal: 'Luteal',
+};
+
+/** Shades one cycle: period days, then (for plausible lengths) follicular, fertile, ovulation and luteal. */
+function shadeCycle(phase: Map<ISODate, Phase>, start: ISODate, next: ISODate, periodLength: number) {
+  const set = (d: ISODate, p: Phase) => { if (!phase.has(d)) phase.set(d, p); };
+  for (let i = 0; i < periodLength; i++) set(addDays(start, i), 'period');
+  const length = diffDays(next, start);
+  if (length < CYCLE_RANGE.min || length > CYCLE_RANGE.max) return;
+  const ovulation = addDays(next, -14);
+  const fertileStart = addDays(ovulation, -5);
+  const fertileEnd = addDays(ovulation, 1);
+  for (let d = addDays(start, periodLength); d < next; d = addDays(d, 1)) {
+    set(d, d < fertileStart ? 'follicular' : d === ovulation ? 'ovulation' : d <= fertileEnd ? 'fertile' : 'luteal');
+  }
 }
 
 function eachDay(start: ISODate, end: ISODate, fn: (d: ISODate) => void) {
@@ -49,7 +77,7 @@ export function buildCalendarIndex(
   settings: Settings,
   today: ISODate,
 ): CalendarIndex {
-  const idx: CalendarIndex = { period: new Set(), predicted: new Set(), fertile: new Set(), intimacy: new Set(), note: new Set(), possible: new Set() };
+  const idx: CalendarIndex = { period: new Set(), predicted: new Set(), fertile: new Set(), intimacy: new Set(), note: new Set(), possible: new Set(), phase: new Map() };
   const showPredictions = !!prediction && !prediction.stale && !prediction.irregular;
   const cycles = buildCycles(entries, today);
   const avgPeriod = averagePeriodLength(cycles, settings);
@@ -61,15 +89,26 @@ export function buildCalendarIndex(
       else if (showPredictions) idx.predicted.add(d);
     }
   }
+  // Stages: completed cycles from when the next period actually started
+  for (const c of cycles) {
+    if (c.next) shadeCycle(idx.phase, c.start, c.next, periodLengthOf(c, avgPeriod));
+    else for (let i = 0; i < periodLengthOf(c, avgPeriod); i++) idx.phase.set(addDays(c.start, i), 'period');
+  }
   if (prediction && showPredictions) {
-    for (const p of upcomingPeriods(prediction)) eachDay(p.start, p.end, (d) => { if (!idx.period.has(d)) idx.predicted.add(d); });
-    eachDay(prediction.fertileStart, prediction.fertileEnd, (d) => idx.fertile.add(d));
+    const upcoming = upcomingPeriods(prediction);
+    // Current cycle up to the expected start; while late it stays luteal until today
+    idx.phase.forEach((p, d) => { if (d >= prediction.lastStart && p !== 'period') idx.phase.delete(d); });
+    shadeCycle(idx.phase, prediction.lastStart, prediction.nextStart, prediction.lastPeriodLength);
+    for (let d = prediction.nextStart; prediction.lateBy > 0 && d < prediction.today; d = addDays(d, 1)) idx.phase.set(d, 'luteal');
+    for (const p of upcoming) shadeCycle(idx.phase, p.start, addDays(p.start, prediction.avgCycle), prediction.avgPeriod);
+    for (const p of upcoming) eachDay(p.start, p.end, (d) => { if (!idx.period.has(d)) idx.predicted.add(d); });
     if (prediction.range && prediction.lateBy === 0) {
       eachDay(prediction.range.earliest, prediction.range.latest, (d) => {
         if (d > today && !idx.predicted.has(d) && !idx.period.has(d)) idx.possible.add(d);
       });
     }
   }
+  idx.phase.forEach((p, d) => { if (p === 'fertile' || p === 'ovulation') idx.fertile.add(d); });
   for (const e of entries) {
     if (e.type === 'intimacy') idx.intimacy.add(e.date);
     if (e.type === 'note') idx.note.add(e.date);
@@ -84,6 +123,7 @@ export interface DayInfo {
   intimacy: boolean;
   note: boolean;
   possible: boolean;
+  phase: Phase | null;
   today: boolean;
   future: boolean;
 }
@@ -96,6 +136,7 @@ export function dayInfo(date: ISODate, idx: CalendarIndex, today: ISODate): DayI
     intimacy: idx.intimacy.has(date),
     note: idx.note.has(date),
     possible: idx.possible.has(date),
+    phase: idx.phase.get(date) ?? null,
     today: date === today,
     future: date > today,
   };
@@ -108,7 +149,10 @@ export function dayAriaLabel(date: ISODate, info: DayInfo): string {
   if (info.period) parts.push('period');
   if (info.predicted) parts.push('predicted period');
   if (info.possible) parts.push('possible period start');
-  if (info.fertile) parts.push('fertile');
+  if (info.phase === 'follicular') parts.push('follicular phase');
+  if (info.phase === 'luteal') parts.push('luteal phase');
+  if (info.phase === 'fertile') parts.push('fertile');
+  if (info.phase === 'ovulation') parts.push('estimated ovulation');
   if (info.intimacy) parts.push('intimacy');
   if (info.note) parts.push('note');
   return parts.join(', ');

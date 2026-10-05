@@ -18,16 +18,33 @@
 .month__dow { color: var(--muted); font-size: 11px; padding-bottom: 4px; }
 
 .day { position: relative; height: 44px; display: flex; align-items: center; justify-content: center; border-radius: var(--r-day); }
-.day--fertile { background: repeating-linear-gradient(135deg, #EADCE5 0 2px, transparent 2px 6px); }
-.day--predicted { box-shadow: inset 0 0 0 1px var(--lilac); color: var(--berry); }
+.day--predicted { box-shadow: inset 0 0 0 1.5px var(--predicted-outline); color: var(--berry); font-weight: 600; }
 .day--period { background: var(--berry-soft); color: var(--berry); font-weight: 500; }
-.day--today { background: var(--ink); color: #fff; font-weight: 600; box-shadow: none; }
-.day--possible { outline: 1.5px dashed var(--lilac); outline-offset: -2px; }
+/* Stage tints: each stage is one continuous band per row */
+.day--follicular, .day--luteal, .day--fertile, .day--ovulation, .day--period { border-radius: 0; }
+.day--run-start { border-top-left-radius: 8px; border-bottom-left-radius: 8px; }
+.day--run-end { border-top-right-radius: 8px; border-bottom-right-radius: 8px; }
+.day--follicular { background: var(--t-follicular); }
+.day--follicular.day--future { background: var(--f-follicular); }
+.day--luteal { background: var(--t-luteal); }
+.day--luteal.day--future { background: var(--f-luteal); }
+.day--fertile { background: var(--hatch-fertile); }
+.day--fertile.day--future { background: var(--hatch-fertile-future); }
+.day--ovulation { background: var(--t-ovulation); }
+.day--ovulation.day--future { background: var(--f-ovulation); }
+.day--predicted { background: var(--bg); border-radius: 7px; }
+.day--labelled { padding-top: 9px; }
+.day__stage { position: absolute; top: 3px; left: 4px; font-size: 9px; font-weight: 600; line-height: 1; white-space: nowrap; z-index: 1; }
+.day__stage--follicular { color: #2B5E9E; }
+.day__stage--fertile { color: #7A4B08; }
+.day__stage--luteal { color: #2F3B70; }
+/* Today keeps its stage colour and gets a ring */
+.day--today { box-shadow: inset 0 0 0 2px var(--ink); font-weight: 700; }
+.day--dim.day--today, .day--hit.day--today { background: var(--ink); color: #fff; box-shadow: none; }
+.day--possible { outline: 1.5px dashed var(--predicted-outline); outline-offset: -2px; }
 .day__dot { position: absolute; bottom: 4px; width: 7px; height: 7px; border-radius: 50%; background: var(--teal); box-shadow: 0 0 0 1.5px var(--bg); }
 .day--period .day__dot { box-shadow: 0 0 0 1.5px var(--berry-soft); }
-.day--today .day__dot { background: #7FD0D4; box-shadow: 0 0 0 1.5px var(--ink); }
 .day__note { position: absolute; top: 4px; right: 5px; width: 6px; height: 6px; border-radius: 2px; border: 1.5px solid var(--muted); }
-.day--today .day__note { border-color: #fff; }
 .day--dim { color: #B9B0B7; }
 .day--hit { font-weight: 600; }
 .day--hit-intimacy { background: var(--teal-soft); color: var(--teal); }
@@ -40,8 +57,15 @@
 .legend span { display: flex; align-items: center; gap: 6px; }
 .legend__swatch { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
 .legend__swatch--period { background: var(--berry-soft); }
-.legend__swatch--predicted { box-shadow: inset 0 0 0 1px var(--lilac); }
-.legend__swatch--fertile { background: repeating-linear-gradient(135deg, #D8C3D1 0 2px, transparent 2px 5px); }
-.legend__swatch--possible { outline: 1.5px dashed var(--lilac); outline-offset: -2px; }
+.legend__swatch--predicted { box-shadow: inset 0 0 0 1.5px var(--predicted-outline); }
+.legend__swatch--follicular { background: var(--t-follicular); }
+.legend__swatch--luteal { background: var(--t-luteal); }
+.legend__swatch--fertile { background: var(--hatch-fertile); }
+.legend__swatch--possible { outline: 1.5px dashed var(--predicted-outline); outline-offset: -2px; }
 .legend__dot { width: 8px; height: 8px; border-radius: 50%; background: var(--teal); display: inline-block; }
 .legend__note { width: 7px; height: 7px; border-radius: 2px; border: 1.5px solid var(--muted); display: inline-block; }
+
+.stages { display: grid; gap: 8px; margin: 6px 0 14px; padding: 12px 14px; border: 1px solid var(--line); border-radius: var(--r-group); background: var(--surface); }
+.stages dt { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 500; }
+.stages dd { font-size: 13px; color: var(--muted); margin-left: 22px; }
+.stages .legend__swatch { width: 14px; height: 14px; border-radius: 4px; }

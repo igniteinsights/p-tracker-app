@@ -51,13 +51,18 @@ export function CalendarScreen({ data, onOpenLog }: { data: DataState; onOpenLog
           </div>
         );
       })}
+      <dl className="stages">
+        <div><dt><em className="legend__swatch legend__swatch--period" />Period</dt><dd>Bleeding days</dd></div>
+        <div><dt><em className="legend__swatch legend__swatch--follicular" />Follicular</dt><dd>After your period, before the fertile window</dd></div>
+        <div><dt><em className="legend__swatch legend__swatch--fertile" />Fertile</dt><dd>Most likely days to conceive, darkest at estimated ovulation</dd></div>
+        <div><dt><em className="legend__swatch legend__swatch--luteal" />Luteal</dt><dd>After ovulation, until your next period</dd></div>
+      </dl>
       <div className="legend" aria-hidden="true">
-        <span><em className="legend__swatch legend__swatch--period" />Period</span>
-        <span><em className="legend__swatch legend__swatch--predicted" />Predicted</span>
+        <span><em className="legend__swatch legend__swatch--predicted" />Predicted period</span>
         <span><em className="legend__swatch legend__swatch--possible" />Possible start</span>
-        <span><em className="legend__swatch legend__swatch--fertile" />Fertile</span>
         <span><em className="legend__dot" />Intimacy</span>
         <span><em className="legend__note" />Note</span>
+        <span>Paler days are predictions</span>
       </div>
     </section>
   );

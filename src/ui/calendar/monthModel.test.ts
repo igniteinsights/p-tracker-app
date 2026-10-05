@@ -51,8 +51,8 @@ describe('buildCalendarIndex', () => {
 
   it('describes a day for screen readers', () => {
     const info = dayInfo('2026-10-03', idx, today);
-    expect(dayAriaLabel('2026-10-03', info)).toBe('3 October 2026, fertile, note');
-    expect(dayAriaLabel('2026-10-05', dayInfo('2026-10-05', idx, today))).toBe('5 October 2026, today');
+    expect(dayAriaLabel('2026-10-03', info)).toBe('3 October 2026, estimated ovulation, note');
+    expect(dayAriaLabel('2026-10-05', dayInfo('2026-10-05', idx, today))).toBe('5 October 2026, today, luteal phase');
   });
 
   it('shows no predictions for stale history', () => {
@@ -74,7 +74,7 @@ describe('possible start days', () => {
     const idx = buildCalendarIndex(starts, p, DEFAULT_SETTINGS, today);
     expect([...idx.possible]).toEqual(['2026-10-14']);
     expect(idx.predicted.has('2026-10-15')).toBe(true);
-    expect(dayAriaLabel('2026-10-14', dayInfo('2026-10-14', idx, today))).toBe('14 October 2026, possible period start');
+    expect(dayAriaLabel('2026-10-14', dayInfo('2026-10-14', idx, today))).toBe('14 October 2026, possible period start, luteal phase');
   });
 });
 
@@ -94,5 +94,55 @@ describe('calendar filters', () => {
     expect(filterCount({ year: 2026, month: 10 }, idx, today, 'intimacy')).toBe(1);
     expect(filterCount({ year: 2026, month: 9 }, idx, today, 'period')).toBe(5);
     expect(filterCount({ year: 2026, month: 10 }, idx, today, 'period')).toBe(0);
+  });
+});
+
+describe('cycle stages', () => {
+  const p = predict(entries, DEFAULT_SETTINGS, today);
+  const idx = buildCalendarIndex(entries, p, DEFAULT_SETTINGS, today);
+  const run = (from: string, to: string) => {
+    const out = new Set<string | undefined>();
+    for (let d = from; d <= to; d = addDays(d, 1)) out.add(idx.phase.get(d));
+    return [...out];
+  };
+
+  it('estimates stages for a past cycle from when the next period started', () => {
+    expect(run('2026-08-22', '2026-08-26')).toEqual(['period']);
+    expect(run('2026-08-27', '2026-08-30')).toEqual(['follicular']);
+    expect(run('2026-08-31', '2026-09-04')).toEqual(['fertile']);
+    expect(idx.phase.get('2026-09-05')).toBe('ovulation');
+    expect(run('2026-09-07', '2026-09-18')).toEqual(['luteal']);
+  });
+
+  it('predicts stages for the current and next cycles', () => {
+    expect(run('2026-09-19', '2026-09-23')).toEqual(['period']);
+    expect(run('2026-09-24', '2026-09-27')).toEqual(['follicular']);
+    expect(idx.phase.get('2026-10-03')).toBe('ovulation');
+    expect(run('2026-10-05', '2026-10-16')).toEqual(['luteal']);
+    expect(run('2026-10-17', '2026-10-21')).toEqual(['period']);
+    expect(run('2026-10-22', '2026-10-25')).toEqual(['follicular']);
+    expect(idx.phase.get('2026-10-26')).toBe('fertile');
+  });
+
+  it('only shades period days when predictions are off', () => {
+    const settings = { ...DEFAULT_SETTINGS, irregular: true };
+    const irr = buildCalendarIndex(entries, predict(entries, settings, today), settings, today);
+    expect(irr.phase.get('2026-09-20')).toBe('period');
+    expect(irr.phase.get('2026-10-05')).toBeUndefined();
+    expect(irr.phase.get('2026-09-07')).toBe('luteal'); // past completed cycles are still known
+  });
+
+  it('only shades period days for implausibly long cycles', () => {
+    const gap: NewEntry[] = [{ date: '2026-03-01', type: 'period-start' }, { date: '2026-06-01', type: 'period-start' }];
+    const g = buildCalendarIndex(gap, predict(gap, DEFAULT_SETTINGS, '2026-06-10'), DEFAULT_SETTINGS, '2026-06-10');
+    expect(g.phase.get('2026-03-02')).toBe('period');
+    expect(g.phase.get('2026-04-15')).toBeUndefined();
+  });
+
+  it('keeps the current cycle in its luteal stage while a period is late', () => {
+    const late = predict(entries, DEFAULT_SETTINGS, '2026-10-20')!;
+    const l = buildCalendarIndex(entries, late, DEFAULT_SETTINGS, '2026-10-20');
+    expect(l.phase.get('2026-10-18')).toBe('luteal');
+    expect(l.phase.get('2026-10-20')).toBe('period'); // predicted from today
   });
 });

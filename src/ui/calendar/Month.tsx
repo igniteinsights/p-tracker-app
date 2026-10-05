@@ -1,6 +1,6 @@
 import { memo } from 'react';
-import { MONTHS, type ISODate } from '../../domain/dates';
-import { dayAriaLabel, dayInfo, filterCount, matchesFilter, monthCells, type CalendarFilter, type CalendarIndex, type MonthRef } from './monthModel';
+import { addDays, MONTHS, weekdayIndex, type ISODate } from '../../domain/dates';
+import { dayAriaLabel, dayInfo, filterCount, matchesFilter, monthCells, PHASE_NAMES, phaseGroup, type CalendarFilter, type CalendarIndex, type MonthRef } from './monthModel';
 
 const DOW = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
 
@@ -29,12 +29,23 @@ export const Month = memo(function Month({ month, index, today, filter, onOpenDa
           const info = dayInfo(date, index, today);
           const filtered = filter !== 'all';
           const hit = filtered && matchesFilter(info, filter);
+          const group = phaseGroup(info.phase);
+          const prevGroup = phaseGroup(index.phase.get(addDays(date, -1)));
+          const nextGroup = phaseGroup(index.phase.get(addDays(date, 1)));
+          const col = weekdayIndex(date);
+          const lastOfMonth = addDays(date, 1).slice(5, 7) !== date.slice(5, 7);
+          const runStart = group && (col === 0 || date.endsWith('-01') || prevGroup !== group);
+          const runEnd = group && (col === 6 || lastOfMonth || nextGroup !== group);
+          // Name each stage where it begins (and on the 1st, if it carries over from last month)
+          const stage = !filtered && group && group !== 'period' && (prevGroup !== group || date.endsWith('-01')) ? PHASE_NAMES[group] : null;
           const cls = (filtered
             ? ['day', hit ? `day--hit day--hit-${filter}` : 'day--dim', info.today && 'day--today']
-            : ['day', info.period && 'day--period', info.predicted && 'day--predicted', info.possible && 'day--possible', info.fertile && 'day--fertile', info.today && 'day--today']
+            : ['day', info.phase && `day--${info.phase}`, info.future && 'day--future', runStart && 'day--run-start', runEnd && 'day--run-end',
+               info.period && 'day--period', info.predicted && 'day--predicted', info.possible && 'day--possible', stage && 'day--labelled', info.today && 'day--today']
           ).filter(Boolean).join(' ');
           return (
             <button key={date} type="button" className={cls} aria-label={dayAriaLabel(date, info)} onClick={() => onOpenDay(date)}>
+              {stage && <span className={`day__stage day__stage--${group}`}>{stage}</span>}
               {Number(date.slice(8))}
               {!filtered && info.intimacy && <i className="day__dot" aria-hidden="true" />}
               {!filtered && info.note && <b className="day__note" aria-hidden="true" />}
