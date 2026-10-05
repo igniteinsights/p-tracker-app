@@ -1,0 +1,6 @@
+.log__head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.log__title { font-size: 20px; font-weight: 600; }
+.log__nav { display: flex; }
+.log__nav button { width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; color: var(--muted); border-radius: var(--r-control); }
+.log__note { margin-top: 14px; }
+.log__save { margin-top: 16px; min-height: 50px; }

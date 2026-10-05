@@ -1,0 +1,25 @@
+:root {
+  --bg: #FBFAFB;
+  --surface: #FFFFFF;
+  --ink: #1E1A1D;
+  --muted: #7A7078;
+  --line: #E6DFE5;
+  --tile: #ECE6EB;
+  --tile-past: #D9CFD7;
+  --berry: #7B2D5E;
+  --berry-soft: #F1E3EC;
+  --lilac: #C7A6BD;
+  --danger: #A12A2A;
+
+  --font: 'Bricolage Grotesque Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  --r-group: 14px;
+  --r-control: 12px;
+  --r-day: 7px;
+  --r-tile: 3px;
+
+  --gutter: 20px;
+  --nav-h: 64px;
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}

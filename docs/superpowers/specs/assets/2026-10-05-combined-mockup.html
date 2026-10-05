@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Combined direction</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:#FBFAFB; --ink:#1E1A1D; --muted:#7A7078; --line:#E6DFE5; --tile:#ECE6EB; --tile-past:#D9CFD7;
+    --berry:#7B2D5E; --berry-soft:#F1E3EC; --lilac:#C7A6BD;
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:#E9E9E7; font-family:"Bricolage Grotesque", system-ui, sans-serif; color:#2b2b2b; padding:32px 24px 64px; }
+  .intro { max-width:1560px; margin:0 auto 28px; }
+  .intro h1 { font-size:26px; font-weight:600; letter-spacing:-.01em; }
+  .intro p { color:#5f5e5b; margin-top:6px; max-width:76ch; line-height:1.5; }
+  .row { display:flex; gap:32px; justify-content:center; flex-wrap:wrap; }
+  .col { display:flex; flex-direction:column; gap:14px; align-items:center; }
+  .caption { width:340px; }
+  .caption h2 { font-size:16px; font-weight:600; }
+  .caption p { font-size:14px; color:#5f5e5b; line-height:1.45; margin-top:4px; }
+
+  .phone { width:340px; height:740px; border-radius:36px; overflow:hidden; position:relative; box-shadow:0 0 0 8px #1d1d1d, 0 24px 48px rgba(0,0,0,.18); display:flex; flex-direction:column; background:var(--bg); color:var(--ink); }
+  .status { height:32px; display:flex; justify-content:space-between; align-items:center; padding:0 22px; font-size:12px; font-weight:500; flex:none; }
+  .scroll { flex:1; overflow:hidden; padding:16px 20px 0; }
+  .nav { flex:none; display:flex; justify-content:space-around; padding:10px 0 18px; color:#9A8F98; }
+  .nav span { font-size:11px; display:flex; flex-direction:column; align-items:center; gap:4px; }
+  .nav .on { color:var(--ink); }
+  .nav svg { width:20px; height:20px; stroke:currentColor; fill:none; stroke-width:1.8; }
+
+  /* Today */
+  .top { display:flex; justify-content:space-between; align-items:baseline; font-size:14px; color:var(--muted); }
+  .big { font-size:84px; font-weight:800; letter-spacing:-.045em; line-height:.9; margin:22px 0 4px; }
+  .big small { font-size:19px; font-weight:600; letter-spacing:-.01em; color:var(--muted); margin-left:6px; }
+  .sub { font-size:16px; color:#4A4148; margin-bottom:24px; }
+  .ribbon { display:grid; grid-template-columns:repeat(28,1fr); gap:2px; height:60px; }
+  .ribbon span { border-radius:3px; background:var(--tile); }
+  .ribbon span.past { background:var(--tile-past); }
+  .ribbon span.period { background:var(--berry); }
+  .ribbon span.fertile { background:repeating-linear-gradient(135deg,var(--lilac) 0 2px,var(--tile) 2px 5px); }
+  .ribbon span.ov { background:var(--lilac); }
+  .ribbon span.today { background:var(--ink); height:80px; margin-top:-10px; border-radius:4px; }
+  .rlabels { display:flex; justify-content:space-between; font-size:12px; color:var(--muted); margin:10px 0 24px; }
+  .facts { display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--line); border-radius:14px; overflow:hidden; margin-bottom:20px; }
+  .facts div { background:var(--bg); padding:13px; }
+  .facts dt { font-size:12px; color:var(--muted); }
+  .facts dd { font-size:19px; font-weight:600; margin-top:2px; letter-spacing:-.01em; }
+  .chips { display:flex; gap:8px; flex-wrap:wrap; }
+  .chips span { font-size:14px; padding:9px 14px; border-radius:999px; border:1px solid #DCD3DA; }
+  .chips span.primary { background:var(--berry); color:#fff; border-color:var(--berry); }
+
+  /* Calendar (A's structure, B's palette) */
+  .mhead { display:flex; justify-content:space-between; align-items:baseline; margin:4px 0 8px; }
+  .mhead h3 { font-size:22px; font-weight:600; letter-spacing:-.01em; }
+  .mhead span { font-size:13px; color:var(--muted); }
+  .cal { display:grid; grid-template-columns:repeat(7,1fr); text-align:center; font-size:13px; row-gap:2px; margin-bottom:18px; }
+  .cal .dow { color:var(--muted); font-size:11px; padding-bottom:4px; }
+  .cal .d { height:36px; display:flex; align-items:center; justify-content:center; position:relative; border-radius:7px; }
+  .cal .d.period { background:var(--berry-soft); color:var(--berry); font-weight:500; }
+  .cal .d.pred { box-shadow:inset 0 0 0 1px var(--lilac); color:var(--berry); }
+  .cal .d.fertile { background:repeating-linear-gradient(135deg,#EADCE5 0 2px,transparent 2px 6px); }
+  .cal .d.today { background:var(--ink); color:#fff; font-weight:600; }
+  .cal .d i { position:absolute; bottom:4px; width:4px; height:4px; border-radius:50%; background:var(--berry); }
+  .cal .d b { position:absolute; top:4px; right:5px; width:4px; height:4px; background:var(--muted); border-radius:1px; }
+  .legend { display:flex; flex-wrap:wrap; gap:6px 14px; font-size:12px; color:var(--muted); }
+  .legend span { display:flex; align-items:center; gap:6px; }
+  .legend em { width:12px; height:12px; border-radius:3px; display:inline-block; }
+
+  /* Log sheet */
+  .dim { position:absolute; inset:0; background:rgba(30,26,29,.38); }
+  .sheet { position:absolute; left:0; right:0; bottom:0; background:var(--bg); border-radius:22px 22px 0 0; padding:10px 20px 22px; }
+  .grab { width:36px; height:4px; border-radius:2px; background:#D5CCD3; margin:0 auto 14px; }
+  .sheet .when { display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; }
+  .sheet .when h3 { font-size:20px; font-weight:600; }
+  .sheet .when span { color:var(--muted); font-size:18px; letter-spacing:8px; }
+  .opt { display:flex; justify-content:space-between; align-items:center; padding:13px 0; border-bottom:1px solid var(--line); font-size:16px; }
+  .opt small { display:block; font-size:12px; color:var(--muted); margin-top:1px; }
+  .tog { width:42px; height:24px; border-radius:12px; background:#DDD5DB; position:relative; flex:none; }
+  .tog::after { content:""; position:absolute; top:3px; left:3px; width:18px; height:18px; border-radius:50%; background:#fff; }
+  .tog.on { background:var(--berry); }
+  .tog.on::after { left:21px; }
+  .note { margin-top:14px; border:1px solid var(--line); border-radius:12px; padding:12px; font-size:15px; color:#4A4148; min-height:64px; background:#fff; }
+  .save { margin-top:16px; background:var(--ink); color:#fff; text-align:center; padding:14px; border-radius:12px; font-size:16px; font-weight:500; }
+
+  /* Data */
+  .page h3 { font-size:26px; font-weight:600; letter-spacing:-.015em; margin:4px 0 16px; }
+  .group { margin-bottom:20px; }
+  .group h4 { font-size:13px; font-weight:500; color:var(--muted); margin-bottom:6px; }
+  .list { border:1px solid var(--line); border-radius:14px; overflow:hidden; background:#fff; }
+  .item { display:flex; justify-content:space-between; align-items:center; padding:12px 14px; font-size:15px; border-bottom:1px solid var(--line); }
+  .item:last-child { border-bottom:0; }
+  .item small { display:block; font-size:12px; color:var(--muted); margin-top:2px; }
+  .item .v { color:var(--muted); font-size:14px; }
+  .nudge { background:var(--berry-soft); color:var(--berry); border-radius:12px; padding:11px 13px; font-size:14px; line-height:1.35; margin-bottom:18px; }
+</style>
+</head>
+<body>
+  <div class="intro">
+    <h1>Ribbon home with the Page calendar</h1>
+    <p>Four screens in one visual style: the Ribbon home, A's calendar in the Ribbon colours, the sheet you log a day with, and where import and export live. Tell me in the terminal what to change.</p>
+  </div>
+
+  <div class="row">
+    <!-- Today -->
+    <div class="col">
+      <div class="phone">
+        <div class="status"><span>9:41</span><span>●●● 100%</span></div>
+        <div class="scroll">
+          <div class="top"><span>Monday 5 October</span></div>
+          <div class="big">17<small>of 28</small></div>
+          <div class="sub">Period expected in 12 days, around Sat 17 Oct.</div>
+          <div class="ribbon" data-ribbon></div>
+          <div class="rlabels"><span>19 Sep</span><span>Ovulation est. 2 Oct</span><span>16 Oct</span></div>
+          <dl class="facts">
+            <div><dt>Last period</dt><dd>19 Sep, 5 days</dd></div>
+            <div><dt>Average cycle</dt><dd>28 days</dd></div>
+            <div><dt>Fertile window</dt><dd>Ended 4 Oct</dd></div>
+            <div><dt>Cycles logged</dt><dd>42</dd></div>
+          </dl>
+          <div class="chips"><span class="primary">Period started</span><span>Intimacy</span><span>Note</span></div>
+        </div>
+        <div class="nav" data-nav="0"></div>
+      </div>
+      <div class="caption"><h2>Today</h2><p>The chips log something for today in one tap. Tapping the ribbon opens the calendar.</p></div>
+    </div>
+
+    <!-- Calendar -->
+    <div class="col">
+      <div class="phone">
+        <div class="status"><span>9:41</span><span>●●● 100%</span></div>
+        <div class="scroll">
+          <div class="mhead"><h3>September</h3><span>2026</span></div>
+          <div class="cal" data-cal="sep"></div>
+          <div class="mhead"><h3>October</h3><span>Today</span></div>
+          <div class="cal" data-cal="oct"></div>
+          <div class="legend">
+            <span><em style="background:var(--berry-soft)"></em>Period</span>
+            <span><em style="box-shadow:inset 0 0 0 1px var(--lilac)"></em>Predicted</span>
+            <span><em style="background:repeating-linear-gradient(135deg,#D8C3D1 0 2px,transparent 2px 5px)"></em>Fertile</span>
+            <span><em style="width:6px;height:6px;border-radius:50%;background:var(--berry)"></em>Intimacy</span>
+            <span><em style="width:6px;height:6px;border-radius:1px;background:var(--muted)"></em>Note</span>
+          </div>
+        </div>
+        <div class="nav" data-nav="1"></div>
+      </div>
+      <div class="caption"><h2>Calendar</h2><p>Scroll back through all 13+ years of history. Tap any day to log or edit it.</p></div>
+    </div>
+
+    <!-- Log sheet -->
+    <div class="col">
+      <div class="phone">
+        <div class="status"><span>9:41</span><span>●●● 100%</span></div>
+        <div class="scroll" style="opacity:.6">
+          <div class="mhead"><h3>October</h3><span>Today</span></div>
+          <div class="cal" data-cal="oct"></div>
+        </div>
+        <div class="nav" data-nav="1"></div>
+        <div class="dim"></div>
+        <div class="sheet">
+          <div class="grab"></div>
+          <div class="when"><h3>Saturday 3 October</h3><span>‹›</span></div>
+          <div class="opt"><div>Period started</div><div class="tog"></div></div>
+          <div class="opt"><div>Period ended<small>Optional, otherwise estimated</small></div><div class="tog"></div></div>
+          <div class="opt"><div>Intimacy</div><div class="tog on"></div></div>
+          <div class="note">Felt tired, early night</div>
+          <div class="save">Save</div>
+        </div>
+      </div>
+      <div class="caption"><h2>Log a day</h2><p>The same sheet is used for today and for past days. It holds the same entries MyDays did, so nothing is lost on import.</p></div>
+    </div>
+
+    <!-- Data -->
+    <div class="col">
+      <div class="phone">
+        <div class="status"><span>9:41</span><span>●●● 100%</span></div>
+        <div class="scroll page">
+          <h3>Settings</h3>
+          <div class="nudge">Last backup was 34 days ago. Your data is only on this phone, so export a copy now and then.</div>
+          <div class="group">
+            <h4>Your data</h4>
+            <div class="list">
+              <div class="item"><div>Export backup<small>JSON file, can be imported back</small></div></div>
+              <div class="item"><div>Export for spreadsheets<small>CSV file, opens in Google Sheets or Excel</small></div></div>
+              <div class="item"><div>Import backup<small>JSON from this app</small></div></div>
+              <div class="item"><div>Import from MyDays<small>.myd file</small></div></div>
+            </div>
+          </div>
+          <div class="group">
+            <h4>Predictions</h4>
+            <div class="list">
+              <div class="item"><div>Cycle length</div><div class="v">Auto, 28 days</div></div>
+              <div class="item"><div>Period length</div><div class="v">Auto, 5 days</div></div>
+            </div>
+          </div>
+        </div>
+        <div class="nav" data-nav="2"></div>
+      </div>
+      <div class="caption"><h2>Settings and data</h2><p>Import and export in one place, with a reminder when your last backup is getting old.</p></div>
+    </div>
+  </div>
+
+<script>
+  const icons = [
+    ['Today','<circle cx="12" cy="12" r="8"/>'],
+    ['Calendar','<rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16"/>'],
+    ['Settings','<circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/>'],
+  ];
+  document.querySelectorAll('[data-nav]').forEach(el => {
+    const on = +el.dataset.nav;
+    el.innerHTML = icons.map(([l,p],i) => `<span class="${i===on?'on':''}"><svg viewBox="0 0 24 24">${p}</svg>${l}</span>`).join('');
+  });
+  const months = {
+    sep: { lead:1, days:30, cls:d => d>=19&&d<=23?'period':d>=28?'fertile':'', dot:[12,27], note:[24] },
+    oct: { lead:3, days:31, cls:d => d===5?'today':d<=4?'fertile':d>=17&&d<=21?'pred':'', dot:[2,3], note:[3] },
+  };
+  document.querySelectorAll('[data-cal]').forEach(el => {
+    const m = months[el.dataset.cal];
+    let h = ['M','T','W','T','F','S','S'].map(x => `<div class="dow">${x}</div>`).join('');
+    h += '<div></div>'.repeat(m.lead);
+    for (let d = 1; d <= m.days; d++) {
+      h += `<div class="d ${m.cls(d)}">${d}${m.dot.includes(d)?'<i></i>':''}${m.note.includes(d)?'<b></b>':''}</div>`;
+    }
+    el.innerHTML = h;
+  });
+  let rh = '';
+  for (let d = 1; d <= 28; d++) {
+    rh += `<span class="${d<=5?'period':d===14?'ov':(d>=10&&d<=16)?'fertile':d===17?'today':d<17?'past':''}"></span>`;
+  }
+  document.querySelector('[data-ribbon]').innerHTML = rh;
+</script>
+</body>
+</html>

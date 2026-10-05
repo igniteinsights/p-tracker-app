@@ -1,0 +1,33 @@
+# Personal health data — never commit
+*.myd
+*.myd.*
+exports/
+*-export*.json
+*-export*.csv
+
+# Dependencies & build output
+node_modules/
+dist/
+dev-dist/
+coverage/
+.vite/
+
+# Env & local config
+.env
+.env.*
+!.env.example
+
+# OS / editor
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+*.log
+
+# Brainstorm mockups
+.superpowers/
+
+# Playwright
+test-results/
+playwright-report/

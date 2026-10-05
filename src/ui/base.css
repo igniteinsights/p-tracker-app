@@ -1,0 +1,45 @@
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body, #root { min-height: 100%; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font);
+  font-size: 16px;
+  line-height: 1.4;
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+}
+button, input, select, textarea { font: inherit; color: inherit; }
+button { background: none; border: 0; cursor: pointer; }
+:focus-visible { outline: 2px solid var(--berry); outline-offset: 2px; }
+.visually-hidden {
+  position: absolute; width: 1px; height: 1px; overflow: hidden;
+  clip: rect(0 0 0 0); white-space: nowrap;
+}
+
+.app { max-width: 480px; margin: 0 auto; min-height: 100vh; display: flex; flex-direction: column; background: var(--bg); }
+.screen { flex: 1; padding: calc(var(--safe-top) + 16px) var(--gutter) calc(var(--nav-h) + var(--safe-bottom) + 24px); }
+.screen__title { font-size: 26px; font-weight: 600; letter-spacing: -0.015em; margin: 4px 0 16px; }
+
+.btn { min-height: 44px; padding: 0 16px; border-radius: var(--r-control); font-weight: 500; font-size: 16px; }
+.btn--primary { background: var(--ink); color: #fff; }
+.btn--quiet { background: var(--surface); border: 1px solid var(--line); }
+.btn--danger { background: var(--danger); color: #fff; }
+.btn--block { width: 100%; }
+.btn:disabled { opacity: 0.4; cursor: default; }
+
+.group { margin-bottom: 22px; }
+.group__title { font-size: 13px; font-weight: 500; color: var(--muted); margin-bottom: 6px; }
+.list { border: 1px solid var(--line); border-radius: var(--r-group); background: var(--surface); overflow: hidden; }
+.list__item {
+  display: flex; justify-content: space-between; align-items: center; gap: 12px;
+  width: 100%; min-height: 52px; padding: 10px 14px; text-align: left;
+  border-bottom: 1px solid var(--line); font-size: 15px; background: var(--surface);
+}
+.list__item:last-child { border-bottom: 0; }
+.list__item small { display: block; font-size: 12px; color: var(--muted); margin-top: 2px; }
+.list__value { color: var(--muted); font-size: 14px; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}

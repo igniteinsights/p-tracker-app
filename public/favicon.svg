@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="arc" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#C7A6BD"/>
+      <stop offset="1" stop-color="#B0568C"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="#1E1A1D"/>
+  <!-- 300° of the cycle, clockwise from the top; the dot is today -->
+  <path d="M 256 128 A 128 128 0 1 1 145.15 192" fill="none" stroke="url(#arc)" stroke-width="44" stroke-linecap="round"/>
+  <circle cx="145.15" cy="192" r="30" fill="#FBFAFB"/>
+</svg>

@@ -1,0 +1,28 @@
+.today__date { font-size: 14px; color: var(--muted); }
+.today__day { font-size: 84px; font-weight: 800; letter-spacing: -0.045em; line-height: 0.9; margin: 22px 0 6px; }
+.today__day small { font-size: 19px; font-weight: 600; letter-spacing: -0.01em; color: var(--muted); margin-left: 4px; }
+.today__empty-title { font-size: 34px; font-weight: 700; letter-spacing: -0.025em; margin: 22px 0 8px; }
+.today__status { font-size: 16px; color: #4A4148; margin-bottom: 24px; }
+.today__hint { font-size: 15px; color: var(--muted); margin: -12px 0 24px; }
+.today__import { margin-top: 14px; }
+
+.ribbon { display: block; width: 100%; text-align: left; margin-bottom: 24px; border-radius: 6px; }
+.ribbon__tiles { display: grid; gap: 2px; height: 60px; align-items: center; }
+.ribbon__tile { height: 60px; border-radius: var(--r-tile); background: var(--tile); }
+.ribbon__tile--past { background: var(--tile-past); }
+.ribbon__tile--period { background: var(--berry); }
+.ribbon__tile--fertile { background: repeating-linear-gradient(135deg, var(--lilac) 0 2px, var(--tile) 2px 5px); }
+.ribbon__tile--ovulation { background: var(--lilac); }
+.ribbon__tile--today { background: var(--ink); height: 80px; border-radius: 4px; }
+.ribbon__labels { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); margin-top: 10px; }
+
+.facts { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: var(--r-group); overflow: hidden; margin-bottom: 20px; }
+.facts__cell { background: var(--bg); padding: 13px; }
+.facts dt { font-size: 12px; color: var(--muted); }
+.facts dd { font-size: 19px; font-weight: 600; margin-top: 2px; letter-spacing: -0.01em; }
+
+.chips { display: flex; gap: 8px; flex-wrap: wrap; }
+.chip { min-height: 44px; font-size: 15px; padding: 0 16px; border-radius: 999px; border: 1px solid #DCD3DA; background: var(--surface); }
+.chip--primary { background: var(--berry); color: #fff; border-color: var(--berry); }
+.chip--on { background: var(--berry-soft); color: var(--berry); border-color: var(--berry-soft); }
+.chip--on::before { content: '✓ '; }
