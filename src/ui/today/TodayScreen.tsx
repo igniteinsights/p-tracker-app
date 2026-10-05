@@ -4,6 +4,7 @@ import { buildCalendarIndex, type Phase } from '../calendar/monthModel';
 import type { DataState } from '../../data/useData';
 import { ComingUpList } from './ComingUpList';
 import { RecentCycles } from './RecentCycles';
+import { CycleFacts } from './CycleFacts';
 import { QuickLog } from './QuickLog';
 import { Ribbon } from './Ribbon';
 import { statusLine } from './ribbonModel';
@@ -69,6 +70,7 @@ export function TodayScreen({ data, onOpenCalendar, onOpenLog, onOpenSettings, o
       {p.stale && <p className="today__hint">Log the first day of your most recent period to start predictions again.</p>}
       {!p.stale && !p.irregular && <Ribbon prediction={p} onOpen={onOpenCalendar} />}
       <ComingUpList prediction={p} />
+      <CycleFacts prediction={p} entries={entries} settings={settings} today={today} onOpenHistory={onOpenHistory} />
       <RecentCycles entries={entries} settings={settings} today={today} onOpenHistory={onOpenHistory} />
       {quickLog}
     </section>

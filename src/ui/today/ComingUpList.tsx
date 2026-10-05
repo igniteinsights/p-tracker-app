@@ -1,4 +1,4 @@
-import { formatDayMonth, formatShort } from '../../domain/dates';
+import { formatShort } from '../../domain/dates';
 import type { Prediction } from '../../domain/predict';
 import { comingUp } from './comingUp';
 import { rangeText } from './ribbonModel';
@@ -19,16 +19,16 @@ function Row({ swatch, title, detail, aside }: { swatch: string; title: string; 
 }
 
 export function ComingUpList({ prediction }: { prediction: Prediction }) {
-  const { period, fertile, last } = comingUp(prediction);
-  const lastYear = last.date.slice(0, 4) !== prediction.today.slice(0, 4) ? ` ${last.date.slice(0, 4)}` : '';
+  const { period, fertile } = comingUp(prediction);
+  if (!period) return null;
   return (
     <section className="upcoming" aria-labelledby="upcoming-title">
-      <h2 id="upcoming-title" className="today__section-title">{period ? 'Coming up' : 'Your cycle'}</h2>
+      <h2 id="upcoming-title" className="today__section-title">Coming up</h2>
       <ul className="upcoming__list">
-        {period && period.late > 0 && (
+        {period.late > 0 && (
           <Row swatch="period" title="Period late" detail={`Expected ${formatShort(period.date)}`} aside={`${period.late} ${period.late === 1 ? 'day' : 'days'} late`} />
         )}
-        {period && period.late === 0 && (
+        {period.late === 0 && (
           <Row
             swatch="period"
             title="Next period"
@@ -44,7 +44,6 @@ export function ComingUpList({ prediction }: { prediction: Prediction }) {
             aside={fertile.now ? 'Now' : days(fertile.inDays)}
           />
         )}
-        <Row swatch="last" title="Last period" detail={`${formatDayMonth(last.date)}${lastYear} · ${last.length} days`} />
       </ul>
     </section>
   );

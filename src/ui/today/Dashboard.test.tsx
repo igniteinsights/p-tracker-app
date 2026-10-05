@@ -19,12 +19,11 @@ const p: Prediction = {
 };
 
 describe('ComingUpList', () => {
-  it('lists the next period with its likely range, the fertile window and the last period', () => {
+  it('lists the next period with its likely range and the fertile window', () => {
     render(<ComingUpList prediction={p} />);
     expect(screen.getByText('Sat 17 Oct · likely 15–20 Oct')).toBeInTheDocument();
     expect(screen.getByText('12 days')).toBeInTheDocument();
     expect(screen.getByText('Mon 26 Oct – Sun 1 Nov')).toBeInTheDocument();
-    expect(screen.getByText('19 Sep · 5 days')).toBeInTheDocument();
   });
 
   it('says how late a period is', () => {
@@ -33,10 +32,9 @@ describe('ComingUpList', () => {
     expect(screen.getByText('3 days late')).toBeInTheDocument();
   });
 
-  it('shows the year on an old last period', () => {
-    render(<ComingUpList prediction={{ ...p, lastStart: '2024-03-21', stale: true }} />);
-    expect(screen.getByText('21 Mar 2024 · 5 days')).toBeInTheDocument();
-    expect(screen.queryByText('Next period')).not.toBeInTheDocument();
+  it('renders nothing when predictions are off', () => {
+    const { container } = render(<ComingUpList prediction={{ ...p, lastStart: '2024-03-21', stale: true }} />);
+    expect(container).toBeEmptyDOMElement();
   });
 });
 
@@ -63,11 +61,33 @@ describe('RecentCycles', () => {
 });
 
 describe('TodayScreen dashboard', () => {
-  it('docks the quick-log chips and drops the fact grid', () => {
+  it('docks the quick-log chips', () => {
     const data: DataState = { ready: true, entries, settings: DEFAULT_SETTINGS, meta: DEFAULT_META, today, prediction: predict(entries, DEFAULT_SETTINGS, today) };
     render(<ToastProvider><TodayScreen data={data} onOpenCalendar={() => {}} onOpenLog={() => {}} onOpenSettings={() => {}} onOpenHistory={() => {}} /></ToastProvider>);
     expect(screen.getByRole('button', { name: 'Period started' }).closest('.dock')).not.toBeNull();
     expect(screen.getByRole('heading', { name: 'Coming up' })).toBeInTheDocument();
-    expect(screen.queryByText('Cycles logged')).not.toBeInTheDocument();
+  });
+});
+
+describe('Your cycle facts', () => {
+  const stale: Entry[] = ['2023-10-01', '2023-10-29', '2023-11-26', '2023-12-24', '2024-01-21'].map((date, i) => ({ id: `s${i}`, date, type: 'period-start' }));
+  const make = (es: Entry[]): DataState => ({ ready: true, entries: es, settings: DEFAULT_SETTINGS, meta: DEFAULT_META, today, prediction: predict(es, DEFAULT_SETTINGS, today) });
+  const renderToday = (d: DataState, onOpenHistory = () => {}) =>
+    render(<ToastProvider><TodayScreen data={d} onOpenCalendar={() => {}} onOpenLog={() => {}} onOpenSettings={() => {}} onOpenHistory={onOpenHistory} /></ToastProvider>);
+
+  it('keeps typical cycle and cycles logged on Today when history is old', () => {
+    renderToday(make(stale));
+    expect(screen.getByText('Typical cycle')).toBeInTheDocument();
+    expect(screen.getByText('28 days')).toBeInTheDocument();
+    expect(screen.getByText('Cycles logged')).toBeInTheDocument();
+    expect(screen.getByText('21 Jan 2024')).toBeInTheDocument();
+  });
+
+  it('shows the usual range with recent history and opens cycle history', async () => {
+    const onOpenHistory = vi.fn();
+    renderToday(make(entries), onOpenHistory);
+    expect(screen.getByText('29 days · 27–30')).toBeInTheDocument();
+    await userEvent.click(screen.getByRole('button', { name: /Cycles logged/ }));
+    expect(onOpenHistory).toHaveBeenCalled();
   });
 });
