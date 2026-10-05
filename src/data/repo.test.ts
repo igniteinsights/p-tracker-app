@@ -100,7 +100,7 @@ describe('repo', () => {
     expect(await repo.getSettings()).toEqual(DEFAULT_SETTINGS);
     await repo.setMeta({ lastBackupAt: '2026-10-05T00:00:00.000Z' });
     await repo.setMeta({ iosHintDismissed: true });
-    expect(await repo.getMeta()).toEqual({ lastBackupAt: '2026-10-05T00:00:00.000Z', storagePersisted: false, iosHintDismissed: true });
+    expect(await repo.getMeta()).toEqual({ lastBackupAt: '2026-10-05T00:00:00.000Z', storagePersisted: false, iosHintDismissed: true, installDismissedAt: null });
   });
 
   it('deleteAll clears entries and settings but keeps meta', async () => {

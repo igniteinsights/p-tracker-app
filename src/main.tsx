@@ -7,6 +7,9 @@ import './pwa/pwa.css';
 import { db } from './data';
 import { App } from './ui/App';
 import { NoStorage } from './pwa/NoStorage';
+import { listenForInstallPrompt } from './pwa/installPrompt';
+
+listenForInstallPrompt();
 
 const root = createRoot(document.getElementById('root')!);
 

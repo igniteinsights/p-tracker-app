@@ -9,6 +9,7 @@ import { LogSheet } from './log/LogSheet';
 import { SettingsScreen } from './settings/SettingsScreen';
 import { UpdatePrompt } from '../pwa/UpdatePrompt';
 import { IosInstallHint } from '../pwa/IosInstallHint';
+import { InstallBanner } from '../pwa/InstallBanner';
 import './common/common.css';
 
 export function App() {
@@ -22,6 +23,7 @@ export function App() {
   return (
     <ToastProvider>
       <div className="app">
+        <InstallBanner dismissedAt={data.meta.installDismissedAt} />
         <main className="screen">
           {tab === 'today' && (
             <TodayScreen data={data} onOpenCalendar={() => setTab('calendar')} onOpenLog={openLog} onOpenSettings={() => setTab('settings')} />

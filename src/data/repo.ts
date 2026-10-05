@@ -7,9 +7,10 @@ export interface Meta {
   lastBackupAt: string | null;
   storagePersisted: boolean;
   iosHintDismissed: boolean;
+  installDismissedAt: string | null;
 }
 
-export const DEFAULT_META: Meta = { lastBackupAt: null, storagePersisted: false, iosHintDismissed: false };
+export const DEFAULT_META: Meta = { lastBackupAt: null, storagePersisted: false, iosHintDismissed: false, installDismissedAt: null };
 
 export interface DayDraft {
   periodStart: boolean;

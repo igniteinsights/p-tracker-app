@@ -102,3 +102,25 @@ test('readable labels, reachable buttons and toasts that stay clear of sheets', 
   const summary = await page.locator('.import__warnings summary').boundingBox();
   expect(summary!.height).toBeGreaterThanOrEqual(44);
 });
+
+test('offers to install when Chrome says the app is installable', async ({ page }) => {
+  await page.goto('/');
+  await expect(page.getByRole('navigation')).toBeVisible();
+  await page.evaluate(() => {
+    const e = Object.assign(new Event('beforeinstallprompt', { cancelable: true }), {
+      prompt: () => { (window as unknown as { prompted: boolean }).prompted = true; return Promise.resolve(); },
+      userChoice: Promise.resolve({ outcome: 'accepted', platform: 'web' }),
+    });
+    window.dispatchEvent(e);
+  });
+  const banner = page.getByRole('region', { name: 'Install app' });
+  await expect(banner).toBeVisible();
+  // The banner pushes content down rather than covering it
+  const b = await banner.boundingBox();
+  const heading = await page.getByRole('heading', { name: 'Start your history' }).boundingBox();
+  expect(b!.y + b!.height).toBeLessThanOrEqual(heading!.y);
+  await page.screenshot({ path: 'test-results/install-banner.png' });
+  await banner.getByRole('button', { name: 'Install' }).click();
+  expect(await page.evaluate(() => (window as unknown as { prompted?: boolean }).prompted)).toBe(true);
+  await expect(banner).toBeHidden();
+});
