@@ -8,6 +8,7 @@ import { deliverFile } from '../../io/share';
 import { repo } from '../../data';
 import type { DataState } from '../../data/useData';
 import { ConfirmDialog } from '../common/ConfirmDialog';
+import { Toggle } from '../common/Toggle';
 import { useToast } from '../common/Toast';
 import { backupNudge } from './backupNudge';
 import { ImportFlow } from './ImportFlow';
@@ -44,7 +45,7 @@ function LengthRow({ label, setting, autoValue, min, max, onChange }: LengthRowP
   );
 }
 
-export function SettingsScreen({ data }: { data: DataState }) {
+export function SettingsScreen({ data, onOpenHistory }: { data: DataState; onOpenHistory: () => void }) {
   const toast = useToast();
   const { entries, settings, meta, today } = data;
   const [importing, setImporting] = useState(false);
@@ -98,6 +99,11 @@ export function SettingsScreen({ data }: { data: DataState }) {
         <div className="list">
           <LengthRow label="Cycle length" setting={settings.cycleLength} autoValue={autoCycle} min={CYCLE_RANGE.min} max={CYCLE_RANGE.max} onChange={(cycleLength) => update({ cycleLength })} />
           <LengthRow label="Period length" setting={settings.periodLength} autoValue={autoPeriod} min={PERIOD_RANGE.min} max={PERIOD_RANGE.max} onChange={(periodLength) => update({ periodLength })} />
+          <Toggle label="Irregular cycles" hint="Turns off predictions and shows only what you've logged" checked={settings.irregular} onChange={(irregular) => update({ irregular })} />
+          <button type="button" className="list__item" onClick={onOpenHistory}>
+            <span>Cycle history<small>See every cycle and choose which ones count</small></span>
+            <span className="list__value" aria-hidden="true">›</span>
+          </button>
         </div>
       </div>
 

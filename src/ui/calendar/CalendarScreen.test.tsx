@@ -30,6 +30,8 @@ describe('CalendarScreen filters', () => {
     expect(screen.getByRole('button', { name: /^3 October 2026/ })).toHaveClass('day--dim');
     const october = screen.getByRole('heading', { name: 'October' }).parentElement!;
     expect(within(october).getByText('2 days')).toBeInTheDocument();
+    const november = screen.getByRole('heading', { name: 'November' }).parentElement!;
+    expect(within(november).queryByText(/days?$/)).not.toBeInTheDocument();
     await userEvent.click(screen.getByRole('button', { name: 'All' }));
     expect(screen.getByRole('button', { name: /^3 October 2026/ })).not.toHaveClass('day--dim');
   });

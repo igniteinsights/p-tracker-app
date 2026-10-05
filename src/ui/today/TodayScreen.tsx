@@ -11,9 +11,10 @@ interface TodayScreenProps {
   onOpenCalendar: () => void;
   onOpenLog: (date: ISODate, focusNote?: boolean) => void;
   onOpenSettings: () => void;
+  onOpenHistory: () => void;
 }
 
-export function TodayScreen({ data, onOpenCalendar, onOpenLog, onOpenSettings }: TodayScreenProps) {
+export function TodayScreen({ data, onOpenCalendar, onOpenLog, onOpenSettings, onOpenHistory }: TodayScreenProps) {
   const { prediction: p, today, entries } = data;
   const quickLog = <QuickLog entries={entries} today={today} onNote={() => onOpenLog(today, true)} />;
 
@@ -37,17 +38,14 @@ export function TodayScreen({ data, onOpenCalendar, onOpenLog, onOpenSettings }:
       ) : (
         <h1 className="today__day">
           {p.cycleDay}
-          <small> of {p.avgCycle}</small>
+          <small>{p.irregular ? ' cycle day' : ` of ${p.avgCycle}`}</small>
           <span className="visually-hidden"> days into this cycle</span>
         </h1>
       )}
       <p className="today__status">{statusLine(p)}</p>
-      {p.stale ? (
-        <p className="today__hint">Log the first day of your most recent period to start predictions again.</p>
-      ) : (
-        <Ribbon prediction={p} onOpen={onOpenCalendar} />
-      )}
-      <FactGrid prediction={p} />
+      {p.stale && <p className="today__hint">Log the first day of your most recent period to start predictions again.</p>}
+      {!p.stale && !p.irregular && <Ribbon prediction={p} onOpen={onOpenCalendar} />}
+      <FactGrid prediction={p} onOpenHistory={onOpenHistory} />
       {quickLog}
     </section>
   );

@@ -13,7 +13,9 @@ interface MonthProps {
 }
 
 export const Month = memo(function Month({ month, index, today, filter, onOpenDay }: MonthProps) {
-  const count = filter === 'all' ? null : filterCount(month, index, today, filter);
+  const isFuture = month.year * 12 + month.month > Number(today.slice(0, 4)) * 12 + Number(today.slice(5, 7));
+  // Counts are of logged days, so future months have nothing to count
+  const count = filter === 'all' || isFuture ? null : filterCount(month, index, today, filter);
   return (
     <>
       <div className="month__head">

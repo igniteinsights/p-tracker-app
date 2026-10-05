@@ -7,6 +7,7 @@ import { TodayScreen } from './today/TodayScreen';
 import { CalendarScreen } from './calendar/CalendarScreen';
 import { LogSheet } from './log/LogSheet';
 import { SettingsScreen } from './settings/SettingsScreen';
+import { CycleHistory } from './history/CycleHistory';
 import { UpdatePrompt } from '../pwa/UpdatePrompt';
 import { IosInstallHint } from '../pwa/IosInstallHint';
 import { InstallBanner } from '../pwa/InstallBanner';
@@ -16,6 +17,7 @@ export function App() {
   const data = useData();
   const [tab, setTab] = useState<Tab>('today');
   const [log, setLog] = useState<{ date: ISODate; focusNote: boolean } | null>(null);
+  const [historyOpen, setHistoryOpen] = useState(false);
   const openLog = useCallback((date: ISODate, focusNote = false) => setLog({ date, focusNote }), []);
 
   if (!data.ready) return <div className="app" />;
@@ -26,10 +28,10 @@ export function App() {
         <InstallBanner dismissedAt={data.meta.installDismissedAt} />
         <main className="screen">
           {tab === 'today' && (
-            <TodayScreen data={data} onOpenCalendar={() => setTab('calendar')} onOpenLog={openLog} onOpenSettings={() => setTab('settings')} />
+            <TodayScreen data={data} onOpenCalendar={() => setTab('calendar')} onOpenLog={openLog} onOpenSettings={() => setTab('settings')} onOpenHistory={() => setHistoryOpen(true)} />
           )}
           {tab === 'calendar' && <CalendarScreen data={data} onOpenLog={(d) => openLog(d)} />}
-          {tab === 'settings' && <SettingsScreen data={data} />}
+          {tab === 'settings' && <SettingsScreen data={data} onOpenHistory={() => setHistoryOpen(true)} />}
         </main>
         <Nav tab={tab} onChange={setTab} />
         {log && (
@@ -42,6 +44,9 @@ export function App() {
             onClose={() => setLog(null)}
             onChangeDate={(date) => setLog({ date, focusNote: false })}
           />
+        )}
+        {historyOpen && (
+          <CycleHistory entries={data.entries} settings={data.settings} today={data.today} onClose={() => setHistoryOpen(false)} />
         )}
         <UpdatePrompt />
         <IosInstallHint dismissed={data.meta.iosHintDismissed} />

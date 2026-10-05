@@ -124,3 +124,29 @@ test('offers to install when Chrome says the app is installable', async ({ page 
   expect(await page.evaluate(() => (window as unknown as { prompted?: boolean }).prompted)).toBe(true);
   await expect(banner).toBeHidden();
 });
+
+test('cycle history exclusions and the calendar intimacy filter', async ({ page }) => {
+  await page.goto('/');
+  await page.getByRole('button', { name: 'Settings' }).click();
+  await page.getByRole('button', { name: /Import from MyDays/ }).click();
+  await page.getByLabel('Choose a file').setInputFiles('tests/fixtures/sample.myd');
+  await page.getByRole('button', { name: 'Merge' }).click();
+  await expect(page.getByText(/Imported \d+ entries/)).toBeVisible();
+
+  await page.getByRole('button', { name: /Cycle history/ }).click();
+  const history = page.getByRole('dialog', { name: 'Cycle history' });
+  await expect(history.getByText('Long', { exact: true })).toBeVisible();
+  await history.getByRole('switch', { name: 'Include cycle from 2 Sep 2023 in averages' }).click();
+  await expect(history.getByText('Excluded', { exact: true }).first()).toBeVisible();
+  await expect(history.locator('.history__summary')).toContainText('1');
+  await page.keyboard.press('Escape');
+
+  await page.getByRole('button', { name: 'Today', exact: true }).click();
+  await page.getByRole('button', { name: 'Intimacy', exact: true }).click();
+  await page.getByRole('button', { name: 'Calendar', exact: true }).click();
+  const chip = page.getByRole('button', { name: 'Intimacy', exact: true });
+  await chip.click();
+  await expect(chip).toHaveAttribute('aria-pressed', 'true');
+  await expect(page.locator('.day--hit-intimacy.day--today')).toBeVisible();
+  await expect(page.locator('.month__count').filter({ hasText: '1 day' }).first()).toBeVisible();
+});
