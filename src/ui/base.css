@@ -24,6 +24,7 @@ button { background: none; border: 0; cursor: pointer; }
 .btn { min-height: 44px; padding: 0 16px; border-radius: var(--r-control); font-weight: 500; font-size: 16px; }
 .btn--primary { background: var(--ink); color: var(--on-ink); }
 .btn--quiet { background: var(--surface); border: 1px solid var(--line); }
+.btn--accent { background: var(--berry); color: var(--on-berry); }
 .btn--danger { background: var(--danger); color: var(--on-danger); }
 .btn--block { width: 100%; }
 .btn:disabled { opacity: 0.4; cursor: default; }

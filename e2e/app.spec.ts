@@ -25,7 +25,7 @@ test('import MyDays, log a day, add a note, export a backup', async ({ page }) =
 
   const now = new Date();
   const label = `${now.getDate()} ${MONTHS[now.getMonth()]} ${now.getFullYear()}, today`;
-  await page.getByRole('button', { name: 'Calendar' }).click();
+  await page.getByRole('button', { name: 'Calendar', exact: true }).click();
   await page.getByRole('button', { name: new RegExp(`^${label}`) }).click();
   await page.getByRole('textbox', { name: 'Note' }).fill('E2E note, with "quotes"');
   await page.getByRole('button', { name: 'Save' }).click();
@@ -44,7 +44,7 @@ test('import MyDays, log a day, add a note, export a backup', async ({ page }) =
 
 test('the back button closes the log sheet and protects unsaved changes', async ({ page }) => {
   await page.goto('/');
-  await page.getByRole('button', { name: 'Calendar' }).click();
+  await page.getByRole('button', { name: 'Calendar', exact: true }).click();
   const today = page.getByRole('button', { name: /, today/ });
 
   await today.click();
@@ -204,4 +204,20 @@ test.describe('dark mode', () => {
     await expect(page.getByRole('navigation')).toBeVisible();
     expect(await bg()).toBe('rgb(251, 250, 251)');
   });
+});
+
+test('old history: the catch-up card brings predictions back', async ({ page }) => {
+  await page.goto('/');
+  await page.getByRole('button', { name: 'Settings' }).click();
+  await page.getByRole('button', { name: /Import from MyDays/ }).click();
+  await page.getByLabel('Choose a file').setInputFiles('tests/fixtures/sample.myd');
+  await page.getByRole('button', { name: 'Merge' }).click();
+  await page.getByRole('button', { name: 'Today', exact: true }).click();
+  await expect(page.getByRole('heading', { name: 'When did your most recent period start?' })).toBeVisible();
+  await expect(page.getByRole('button', { name: /This month/ })).toBeVisible();
+  await page.getByRole('button', { name: 'It started today' }).click();
+  await expect(page.getByRole('button', { name: /^Day 1 of \d+/ })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Coming up' })).toBeVisible();
+  await expect(page.getByText('This cycle so far')).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'When did your most recent period start?' })).toHaveCount(0);
 });

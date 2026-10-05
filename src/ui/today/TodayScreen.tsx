@@ -5,6 +5,9 @@ import type { DataState } from '../../data/useData';
 import { ComingUpList } from './ComingUpList';
 import { RecentCycles } from './RecentCycles';
 import { CycleFacts } from './CycleFacts';
+import { CatchUpCard } from './CatchUpCard';
+import { MonthCard } from './MonthCard';
+import { ThisCycleCard } from './ThisCycleCard';
 import { QuickLog } from './QuickLog';
 import { Ribbon } from './Ribbon';
 import { statusLine } from './ribbonModel';
@@ -67,11 +70,13 @@ export function TodayScreen({ data, onOpenCalendar, onOpenLog, onOpenSettings, o
           <span>{STAGE_COPY[stage][1]}</span>
         </p>
       )}
-      {p.stale && <p className="today__hint">Log the first day of your most recent period to start predictions again.</p>}
+      {p.stale && <CatchUpCard lastStart={p.lastStart} today={today} />}
       {!p.stale && !p.irregular && <Ribbon prediction={p} onOpen={onOpenCalendar} />}
       <ComingUpList prediction={p} />
       <CycleFacts prediction={p} entries={entries} settings={settings} today={today} onOpenHistory={onOpenHistory} />
       <RecentCycles entries={entries} settings={settings} today={today} onOpenHistory={onOpenHistory} />
+      <MonthCard entries={entries} prediction={p} settings={settings} today={today} onOpenCalendar={onOpenCalendar} />
+      {!p.stale && <ThisCycleCard entries={entries} lastStart={p.lastStart} today={today} />}
       {quickLog}
     </section>
   );

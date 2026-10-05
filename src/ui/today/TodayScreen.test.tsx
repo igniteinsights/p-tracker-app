@@ -18,14 +18,14 @@ const noop = () => {};
 describe('TodayScreen', () => {
   it('shows the ribbon and countdown normally', () => {
     render(<ToastProvider><TodayScreen data={state(false)} onOpenCalendar={noop} onOpenLog={noop} onOpenSettings={noop} onOpenHistory={noop} /></ToastProvider>);
-    expect(screen.getByRole('button', { name: /Open calendar/ })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /^Day \d+ of \d+/ })).toBeInTheDocument();
   });
 
   it('shows the cycle day without predictions when cycles are irregular', () => {
     render(<ToastProvider><TodayScreen data={state(true)} onOpenCalendar={noop} onOpenLog={noop} onOpenSettings={noop} onOpenHistory={noop} /></ToastProvider>);
     expect(screen.getByRole('heading', { name: /17/ })).not.toHaveTextContent('of 28');
     expect(screen.getByText('Predictions are off for irregular cycles.')).toBeInTheDocument();
-    expect(screen.queryByRole('button', { name: /Open calendar/ })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /^Day \d+ of \d+/ })).not.toBeInTheDocument();
   });
 });
 

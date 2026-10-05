@@ -64,6 +64,37 @@
 .recent__key { display: inline-block; width: 16px; height: 8px; border-top: 1.5px dashed var(--ink); border-bottom: 1.5px dashed var(--ink); }
 .recent__key--line { height: 0; border-bottom: 0; }
 
+/* Cards */
+.card { border: 1px solid var(--line); background: var(--surface); border-radius: var(--r-group); padding: 14px; }
+.card__title { font-size: 18px; font-weight: 600; letter-spacing: -0.01em; margin-bottom: 6px; }
+.card__text { font-size: 14px; color: var(--text-2); line-height: 1.45; }
+.catchup { margin: -8px 0 22px; }
+.catchup__actions, .catchup__pick { display: flex; gap: 8px; margin-top: 12px; align-items: flex-end; }
+.catchup__actions .btn { flex: 1; }
+.catchup__label { flex: 1; display: flex; flex-direction: column; gap: 4px; font-size: 13px; color: var(--muted); }
+
+.month-card { margin: 10px 0 22px; }
+.mini { display: grid; grid-template-columns: repeat(7, 1fr); row-gap: 3px; width: 100%; padding: 10px 8px; text-align: center;
+  border: 1px solid var(--line); border-radius: var(--r-group); background: var(--surface); }
+.mini__dow { font-size: 10px; color: var(--muted); padding-bottom: 2px; }
+.mini__day { height: 26px; display: flex; align-items: center; justify-content: center; font-size: 12px; }
+.mini__day--follicular, .mini__day--luteal { background: var(--t-follicular); }
+.mini__day--follicular.mini__day--future, .mini__day--luteal.mini__day--future { background: var(--f-follicular); }
+.mini__day--fertile { background: var(--hatch-fertile); }
+.mini__day--fertile.mini__day--future { background: var(--hatch-fertile-future); }
+.mini__day--ovulation { background: var(--t-ovulation); }
+.mini__day--period { background: var(--berry-soft); color: var(--berry); font-weight: 600; }
+.mini__day--predicted { background: var(--surface); box-shadow: inset 0 0 0 1px var(--predicted-outline); color: var(--berry); border-radius: 5px; }
+.mini__day--today { box-shadow: inset 0 0 0 1.5px var(--ink); font-weight: 700; border-radius: 5px; }
+
+.this-cycle { margin-bottom: 22px; }
+.this-cycle__stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.this-cycle__stats div { display: flex; flex-direction: column; }
+.this-cycle__stats dd { font-size: 20px; font-weight: 600; }
+.this-cycle__stats dt { font-size: 12px; color: var(--muted); line-height: 1.3; }
+.this-cycle__note { margin-top: 12px; padding: 9px 11px; border-radius: 10px; background: var(--bg); font-size: 14px; color: var(--text-2); display: flex; flex-direction: column; }
+.this-cycle__note small { font-size: 11px; color: var(--muted); }
+
 .dock {
   position: fixed; left: 50%; transform: translateX(-50%); width: min(100%, 480px); z-index: 25;
   bottom: calc(var(--nav-h) + var(--safe-bottom)); padding: 10px var(--gutter);
