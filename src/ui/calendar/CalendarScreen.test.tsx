@@ -45,6 +45,7 @@ describe('CalendarScreen stages', () => {
     expect(today5).toHaveClass('day--today');
     expect(within(today5).getByText('Luteal')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /^6 October 2026/ })).toHaveClass('day--luteal', 'day--future');
-    expect(screen.getAllByText(/after your period, before the fertile window/i).length).toBe(1);
+    expect(screen.getByText('Low fertility')).toBeInTheDocument();
+    expect(screen.getByText(/lower chance of pregnancy, not no chance/i)).toBeInTheDocument();
   });
 });

@@ -13,16 +13,16 @@
 
   /* Cycle stages: validated for colour-blind separation between neighbouring stages */
   --c-period: #B0457E;
-  --c-follicular: #3F7FD0;
+  /* Low fertility (follicular and luteal days): one pale green */
+  --c-low: #58A05A;
   --c-fertile: #C07A12;
-  --c-luteal: #3E4E8C;
-  --t-follicular: color-mix(in srgb, var(--c-follicular) 20%, var(--bg));
-  --t-luteal: color-mix(in srgb, var(--c-luteal) 22%, var(--bg));
+  --t-follicular: color-mix(in srgb, var(--c-low) 22%, var(--bg));
+  --t-luteal: color-mix(in srgb, var(--c-low) 22%, var(--bg));
   --t-fertile: color-mix(in srgb, var(--c-fertile) 20%, var(--bg));
   --t-fertile-stripe: color-mix(in srgb, var(--c-fertile) 30%, var(--bg));
   --t-ovulation: color-mix(in srgb, var(--c-fertile) 42%, var(--bg));
-  --f-follicular: color-mix(in srgb, var(--c-follicular) 13%, var(--bg));
-  --f-luteal: color-mix(in srgb, var(--c-luteal) 14%, var(--bg));
+  --f-follicular: color-mix(in srgb, var(--c-low) 13%, var(--bg));
+  --f-luteal: color-mix(in srgb, var(--c-low) 13%, var(--bg));
   --f-fertile: color-mix(in srgb, var(--c-fertile) 14%, var(--bg));
   --f-fertile-stripe: color-mix(in srgb, var(--c-fertile) 22%, var(--bg));
   --f-ovulation: color-mix(in srgb, var(--c-fertile) 30%, var(--bg));
@@ -54,9 +54,9 @@
   --hatch-current: #E9D3E1;
   --overlay: rgba(30, 26, 29, 0.38);
   --band-fill: rgba(255, 255, 255, 0.28);
-  --stage-follicular-text: #2B5E9E;
+  --stage-follicular-text: #2F6B33;
   --stage-fertile-text: #7A4B08;
-  --stage-luteal-text: #2F3B70;
+  --stage-luteal-text: #2F6B33;
 
   color-scheme: light;
   --font: 'Bricolage Grotesque Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;
@@ -111,22 +111,21 @@
   --hatch-current: #5A2E48;
   --overlay: rgba(0, 0, 0, 0.6);
   --band-fill: rgba(0, 0, 0, 0.22);
-  --stage-follicular-text: #8EBCF0;
+  --stage-follicular-text: #9FD3A0;
   --stage-fertile-text: #E8B05A;
-  --stage-luteal-text: #B3AEF2;
+  --stage-luteal-text: #9FD3A0;
 
   /* Stage colours re-validated for colour-blind separation on a dark surface */
   --c-period: #C2558F;
-  --c-follicular: #3E92D6;
+  --c-low: #58A05A;
   --c-fertile: #C4841C;
-  --c-luteal: #5F58BE;
-  --t-follicular: color-mix(in srgb, var(--c-follicular) 32%, var(--bg));
-  --t-luteal: color-mix(in srgb, var(--c-luteal) 38%, var(--bg));
+  --t-follicular: color-mix(in srgb, var(--c-low) 30%, var(--bg));
+  --t-luteal: color-mix(in srgb, var(--c-low) 30%, var(--bg));
   --t-fertile: color-mix(in srgb, var(--c-fertile) 28%, var(--bg));
   --t-fertile-stripe: color-mix(in srgb, var(--c-fertile) 44%, var(--bg));
   --t-ovulation: color-mix(in srgb, var(--c-fertile) 58%, var(--bg));
-  --f-follicular: color-mix(in srgb, var(--c-follicular) 20%, var(--bg));
-  --f-luteal: color-mix(in srgb, var(--c-luteal) 22%, var(--bg));
+  --f-follicular: color-mix(in srgb, var(--c-low) 18%, var(--bg));
+  --f-luteal: color-mix(in srgb, var(--c-low) 18%, var(--bg));
   --f-fertile: color-mix(in srgb, var(--c-fertile) 18%, var(--bg));
   --f-fertile-stripe: color-mix(in srgb, var(--c-fertile) 30%, var(--bg));
   --f-ovulation: color-mix(in srgb, var(--c-fertile) 40%, var(--bg));

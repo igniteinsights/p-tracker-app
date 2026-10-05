@@ -7,10 +7,10 @@
 .today__stage strong { color: var(--ink); font-weight: 600; }
 .today__stage-swatch { width: 12px; height: 12px; border-radius: 3px; flex: none; }
 .today__stage-swatch--period { background: var(--c-period); }
-.today__stage-swatch--follicular { background: var(--c-follicular); }
+.today__stage-swatch--follicular { background: var(--c-low); }
 .today__stage-swatch--fertile { background: repeating-linear-gradient(135deg, var(--c-fertile) 0 2px, var(--t-fertile) 2px 4px); }
 .today__stage-swatch--ovulation { background: var(--c-fertile); }
-.today__stage-swatch--luteal { background: var(--c-luteal); }
+.today__stage-swatch--luteal { background: var(--c-low); }
 .today__hint { font-size: 15px; color: var(--muted); margin: -12px 0 24px; }
 .today__import { margin-top: 14px; }
 

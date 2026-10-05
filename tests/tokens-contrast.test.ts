@@ -42,3 +42,15 @@ describe.each([['light', light], ['dark', dark]] as const)('%s theme tokens', (_
     expect(contrast(t[fg], t[bg])).toBeGreaterThanOrEqual(4.5);
   });
 });
+
+describe('low-fertility green', () => {
+  it('uses one pale green for follicular and luteal days in both themes', () => {
+    for (const sel of [':root', ":root[data-theme='dark']"]) {
+      const start = css.indexOf(`${sel} {`);
+      const body = css.slice(start, css.indexOf('\n}', start));
+      expect(body).toMatch(/--t-follicular:\s*color-mix\(in srgb, var\(--c-low\)/);
+      expect(body).toMatch(/--t-luteal:\s*color-mix\(in srgb, var\(--c-low\)/);
+    }
+    expect(light['--c-low']).toBe('#58A05A');
+  });
+});

@@ -53,9 +53,8 @@ export function CalendarScreen({ data, onOpenLog }: { data: DataState; onOpenLog
       })}
       <dl className="stages">
         <div><dt><em className="legend__swatch legend__swatch--period" />Period</dt><dd>Bleeding days</dd></div>
-        <div><dt><em className="legend__swatch legend__swatch--follicular" />Follicular</dt><dd>After your period, before the fertile window</dd></div>
+        <div><dt><em className="legend__swatch legend__swatch--follicular" />Low fertility</dt><dd>Follicular days (after your period) and luteal days (after ovulation). A lower chance of pregnancy, not no chance.</dd></div>
         <div><dt><em className="legend__swatch legend__swatch--fertile" />Fertile</dt><dd>Most likely days to conceive, darkest at estimated ovulation</dd></div>
-        <div><dt><em className="legend__swatch legend__swatch--luteal" />Luteal</dt><dd>After ovulation, until your next period</dd></div>
       </dl>
       <div className="legend" aria-hidden="true">
         <span><em className="legend__swatch legend__swatch--predicted" />Predicted period</span>
