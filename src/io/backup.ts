@@ -75,8 +75,14 @@ export function parseBackup(text: string): BackupResult {
     const s = data.settings;
     const cycleLength = isObj(s) ? parseLength(s.cycleLength, CYCLE_RANGE) : null;
     const periodLength = isObj(s) ? parseLength(s.periodLength, PERIOD_RANGE) : null;
-    if (!cycleLength || !periodLength) return fail('This backup has invalid settings.');
-    settings = { cycleLength, periodLength };
+    if (!cycleLength || !periodLength || !isObj(s)) return fail('This backup has invalid settings.');
+    const irregular = s.irregular ?? false;
+    const excludedCycles = s.excludedCycles ?? [];
+    if (typeof irregular !== 'boolean') return fail('This backup has invalid settings.');
+    if (!Array.isArray(excludedCycles) || !excludedCycles.every((d) => typeof d === 'string' && isValidISODate(d))) {
+      return fail('This backup has invalid settings.');
+    }
+    settings = { cycleLength, periodLength, irregular, excludedCycles: [...new Set(excludedCycles as string[])].sort() };
   }
 
   return { ok: true, entries: normaliseEntries(entries), settings };

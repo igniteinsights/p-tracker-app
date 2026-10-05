@@ -103,3 +103,39 @@ describe('upcomingPeriods', () => {
     expect(upcomingPeriods(p, 1)).toEqual([{ start: '2026-10-20', end: '2026-10-24' }]);
   });
 });
+
+describe('excluded cycles', () => {
+  it('leaves excluded cycles out of the average', () => {
+    const es = startsEvery('2026-01-01', [30, 30, 40, 40, 40]);
+    const cycles = buildCycles(es, '2026-10-05');
+    expect(averageCycleLength(cycles, DEFAULT_SETTINGS)).toBe(40);
+    const excludedCycles = [cycles[2].start, cycles[3].start];
+    expect(averageCycleLength(cycles, { ...DEFAULT_SETTINGS, excludedCycles })).toBe(30);
+  });
+});
+
+describe('prediction range', () => {
+  it('gives the middle half of recent cycle lengths when they vary', () => {
+    const es = startsEvery('2026-04-01', [26, 27, 28, 28, 29, 31]); // last start 2026-09-17
+    const p = predict(es, DEFAULT_SETTINGS, '2026-10-05')!;
+    expect(p.avgCycle).toBe(28);
+    expect(p.range).toEqual({ low: 27, high: 29, earliest: '2026-10-14', latest: '2026-10-16' });
+  });
+
+  it('has no range when cycles are steady or the length is fixed', () => {
+    const steady = startsEvery('2026-05-02', [28, 28, 28, 28, 28]);
+    expect(predict(steady, DEFAULT_SETTINGS, '2026-10-05')!.range).toBeNull();
+    const varied = startsEvery('2026-04-01', [24, 27, 28, 28, 30, 33]);
+    const fixed = { ...DEFAULT_SETTINGS, cycleLength: { mode: 'fixed' as const, value: 28 } };
+    expect(predict(varied, fixed, '2026-10-05')!.range).toBeNull();
+  });
+});
+
+describe('irregular cycles switch', () => {
+  it('turns predictions off', () => {
+    const p = predict(startsEvery('2026-05-02', [28, 28, 28, 28, 28]), { ...DEFAULT_SETTINGS, irregular: true }, '2026-10-05')!;
+    expect(p.irregular).toBe(true);
+    expect(p.range).toBeNull();
+    expect(upcomingPeriods(p)).toEqual([]);
+  });
+});

@@ -169,7 +169,7 @@ export function createRepo(db: TrackerDB): Repo {
 
     async getSettings() {
       const row = await db.kv.get('settings');
-      return (row?.value as Settings | undefined) ?? DEFAULT_SETTINGS;
+      return { ...DEFAULT_SETTINGS, ...((row?.value as Partial<Settings> | undefined) ?? {}) };
     },
 
     async setSettings(settings) {

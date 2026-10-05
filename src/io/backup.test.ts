@@ -7,7 +7,7 @@ const entries: NewEntry[] = [
   { date: '2023-12-14', type: 'intimacy' },
   { date: '2023-05-17', type: 'note', text: 'spotting, "maybe"\nsecond line 🌙' },
 ];
-const settings: Settings = { cycleLength: { mode: 'fixed', value: 30 }, periodLength: { mode: 'auto', value: 5 } };
+const settings: Settings = { ...DEFAULT_SETTINGS, cycleLength: { mode: 'fixed', value: 30 }, irregular: true, excludedCycles: ['2023-12-14'] };
 
 describe('backup', () => {
   it('round-trips entries and settings exactly', () => {
@@ -41,6 +41,16 @@ describe('backup', () => {
     expect(parseBackup(JSON.stringify(bad))).toEqual({ ok: false, error: 'Entry 2 has an invalid date.' });
     const note = { app: 'p-tracker', schemaVersion: 1, entries: [{ date: '2024-01-01', type: 'note', text: ' ' }] };
     expect(parseBackup(JSON.stringify(note))).toEqual({ ok: false, error: 'Entry 1 is a note without text.' });
+  });
+
+  it('fills in settings fields that older backups do not have', () => {
+    const r = parseBackup(JSON.stringify({ app: 'p-tracker', schemaVersion: 1, settings: { cycleLength: { mode: 'auto', value: 28 }, periodLength: { mode: 'auto', value: 5 } }, entries: [] }));
+    expect(r).toEqual({ ok: true, entries: [], settings: DEFAULT_SETTINGS });
+  });
+
+  it('rejects malformed exclusions', () => {
+    const bad = { app: 'p-tracker', schemaVersion: 1, settings: { ...DEFAULT_SETTINGS, excludedCycles: ['2024-13-40'] }, entries: [] };
+    expect(parseBackup(JSON.stringify(bad))).toEqual({ ok: false, error: 'This backup has invalid settings.' });
   });
 
   it('defaults missing settings', () => {

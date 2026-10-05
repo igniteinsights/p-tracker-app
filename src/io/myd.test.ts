@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { parseMyd } from './myd';
+import { DEFAULT_SETTINGS } from '../domain/types';
 
 const sample = readFileSync('tests/fixtures/sample.myd', 'utf8');
 const count = (r: ReturnType<typeof parseMyd>, type: string) => r.entries.filter((e) => e.type === type).length;
@@ -38,10 +39,12 @@ describe('parseMyd', () => {
 
   it('extracts settings', () => {
     expect(parseMyd(sample).settings).toEqual({
+      ...DEFAULT_SETTINGS,
       cycleLength: { mode: 'auto', value: 28 },
       periodLength: { mode: 'auto', value: 5 },
     });
     expect(parseMyd('<cyclelength 30/><cyclefixed 1/><reserve <polauto>0</polauto><polength>4</polength>/>').settings).toEqual({
+      ...DEFAULT_SETTINGS,
       cycleLength: { mode: 'fixed', value: 30 },
       periodLength: { mode: 'fixed', value: 4 },
     });

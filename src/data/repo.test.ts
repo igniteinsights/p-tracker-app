@@ -96,6 +96,11 @@ describe('repo', () => {
     expect((await db.changes.toArray()).map((c) => c.op)).toEqual(['put', 'delete']);
   });
 
+  it('fills in new settings fields for settings saved by older versions', async () => {
+    await db.kv.put({ key: 'settings', value: { cycleLength: { mode: 'fixed', value: 30 }, periodLength: { mode: 'auto', value: 5 } } });
+    expect(await repo.getSettings()).toEqual({ ...DEFAULT_SETTINGS, cycleLength: { mode: 'fixed', value: 30 } });
+  });
+
   it('stores settings and merges meta patches', async () => {
     expect(await repo.getSettings()).toEqual(DEFAULT_SETTINGS);
     await repo.setMeta({ lastBackupAt: '2026-10-05T00:00:00.000Z' });

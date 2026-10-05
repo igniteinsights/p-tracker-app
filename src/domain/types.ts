@@ -21,11 +21,17 @@ export interface LengthSetting {
 export interface Settings {
   cycleLength: LengthSetting;
   periodLength: LengthSetting;
+  /** Turns predictions off and shows only what has been logged. */
+  irregular: boolean;
+  /** Start dates of cycles left out of averages and ranges. */
+  excludedCycles: ISODate[];
 }
 
 export const DEFAULT_SETTINGS: Settings = {
   cycleLength: { mode: 'auto', value: 28 },
   periodLength: { mode: 'auto', value: 5 },
+  irregular: false,
+  excludedCycles: [],
 };
 
 export const CYCLE_RANGE = { min: 18, max: 45, fallback: 28 } as const;

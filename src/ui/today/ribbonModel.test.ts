@@ -5,7 +5,7 @@ import type { Prediction } from '../../domain/predict';
 const p: Prediction = {
   today: '2026-10-05', lastStart: '2026-09-19', cycleDay: 17, avgCycle: 28, avgPeriod: 5, lastPeriodLength: 5,
   nextStart: '2026-10-17', ovulation: '2026-10-03', fertileStart: '2026-09-28', fertileEnd: '2026-10-04',
-  predictedPeriodEnd: '2026-10-21', lateBy: 0, cyclesLogged: 42, cycleSpan: 28, stale: false,
+  predictedPeriodEnd: '2026-10-21', lateBy: 0, cyclesLogged: 42, cycleSpan: 28, stale: false, range: null, irregular: false,
 };
 
 describe('ribbonTiles', () => {
@@ -29,6 +29,17 @@ describe('copy', () => {
     expect(statusLine({ ...p, today: '2026-10-17' })).toBe('Period expected today.');
     expect(statusLine({ ...p, today: '2026-10-18', lateBy: 1 })).toBe('Period 1 day late.');
     expect(statusLine({ ...p, lateBy: 3 })).toBe('Period 3 days late.');
+  });
+
+  it('adds the likely range when cycles vary', () => {
+    expect(statusLine({ ...p, range: { low: 26, high: 31, earliest: '2026-10-15', latest: '2026-10-20' } }))
+      .toBe('Period expected in 12 days, around Sat 17 Oct (likely 15–20 Oct).');
+    expect(statusLine({ ...p, range: { low: 26, high: 31, earliest: '2026-09-30', latest: '2026-10-03' } }))
+      .toBe('Period expected in 12 days, around Sat 17 Oct (likely 30 Sep – 3 Oct).');
+  });
+
+  it('says predictions are off for irregular cycles', () => {
+    expect(statusLine({ ...p, irregular: true })).toBe('Predictions are off for irregular cycles.');
   });
 
   it('describes stale history without a countdown', () => {

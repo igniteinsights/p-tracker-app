@@ -79,6 +79,7 @@ function parseSettings(text: string): Settings | null {
   const periodAuto = /<polauto>(\d)<\/polauto>/.exec(text);
   if (!cycle && !period) return null;
   return {
+    ...DEFAULT_SETTINGS,
     cycleLength: cycle
       ? { mode: cycleFixed?.[1] === '1' ? 'fixed' : 'auto', value: clamp(Number(cycle[1]), CYCLE_RANGE.min, CYCLE_RANGE.max) }
       : DEFAULT_SETTINGS.cycleLength,

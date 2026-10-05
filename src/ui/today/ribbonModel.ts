@@ -30,13 +30,20 @@ function fullDate(d: ISODate): string {
   return `${day} ${MONTHS[m - 1].slice(0, 3)} ${y}`;
 }
 
+function rangeText(earliest: ISODate, latest: ISODate): string {
+  if (earliest.slice(0, 7) === latest.slice(0, 7)) return `${Number(earliest.slice(8))}–${formatDayMonth(latest)}`;
+  return `${formatDayMonth(earliest)} – ${formatDayMonth(latest)}`;
+}
+
 export function statusLine(p: Prediction): string {
   if (p.stale) return `No period logged since ${fullDate(p.lastStart)}.`;
+  if (p.irregular) return 'Predictions are off for irregular cycles.';
   if (p.lateBy > 0) return `Period ${plural(p.lateBy, 'day')} late.`;
   const until = diffDays(p.nextStart, p.today);
   if (until === 0) return 'Period expected today.';
   if (until === 1) return 'Period expected tomorrow.';
-  return `Period expected in ${plural(until, 'day')}, around ${formatShort(p.nextStart)}.`;
+  const likely = p.range ? ` (likely ${rangeText(p.range.earliest, p.range.latest)})` : '';
+  return `Period expected in ${plural(until, 'day')}, around ${formatShort(p.nextStart)}${likely}.`;
 }
 
 export function fertileStatus(p: Prediction): string {
