@@ -119,7 +119,7 @@ test('offers to install when Chrome says the app is installable', async ({ page 
   const b = await banner.boundingBox();
   const heading = await page.getByRole('heading', { name: 'Start your history' }).boundingBox();
   expect(b!.y + b!.height).toBeLessThanOrEqual(heading!.y);
-  await page.screenshot({ path: 'test-results/install-banner.png' });
+  await page.screenshot({ path: test.info().outputPath('install-banner.png') });
   await banner.getByRole('button', { name: 'Install' }).click();
   expect(await page.evaluate(() => (window as unknown as { prompted?: boolean }).prompted)).toBe(true);
   await expect(banner).toBeHidden();
