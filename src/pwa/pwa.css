@@ -2,18 +2,18 @@
   position: fixed; left: 50%; transform: translateX(-50%); width: calc(min(100%, 480px) - 2 * var(--gutter));
   bottom: calc(var(--nav-h) + var(--safe-bottom) + 12px); z-index: 55;
   display: flex; align-items: center; justify-content: space-between; gap: 12px;
-  background: var(--ink); color: #fff; border-radius: var(--r-control); padding: 8px 8px 8px 16px; font-size: 15px;
+  background: var(--ink); color: var(--on-ink); border-radius: var(--r-control); padding: 8px 8px 8px 16px; font-size: 15px;
 }
 .banner--top { top: calc(var(--safe-top) + 10px); bottom: auto; }
-.banner__action { color: #F1C9E0; font-weight: 600; min-height: 44px; min-width: 44px; padding: 0 10px; flex: none; }
+.banner__action { color: var(--on-ink-accent); font-weight: 600; min-height: 44px; min-width: 44px; padding: 0 10px; flex: none; }
 /* In the page flow at the top, so it pushes content down instead of covering it */
 .banner.banner--install { position: relative; left: auto; bottom: auto; transform: none; width: auto; z-index: auto; align-items: center; margin: calc(var(--safe-top) + 12px) var(--gutter) 0; padding: 10px 8px 10px 16px; }
 .banner--install + .screen { padding-top: 16px; }
 .banner__text { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
-.banner__text small { font-size: 13px; color: #CFC4CC; }
+.banner__text small { font-size: 13px; color: var(--on-ink-muted); }
 .banner__actions { display: flex; gap: 4px; flex: none; }
-.banner__action--quiet { color: #CFC4CC; font-weight: 500; }
-.banner__action--primary { background: var(--berry); color: #fff; border-radius: 10px; padding: 0 16px; }
+.banner__action--quiet { color: var(--on-ink-muted); font-weight: 500; }
+.banner__action--primary { background: var(--berry); color: var(--on-berry); border-radius: 10px; padding: 0 16px; }
 .no-storage { max-width: 420px; margin: 0 auto; padding: calc(var(--safe-top) + 48px) var(--gutter); }
 .no-storage h1 { font-size: 26px; font-weight: 600; margin-bottom: 12px; }
-.no-storage p { color: #4A4148; line-height: 1.5; }
+.no-storage p { color: var(--text-2); line-height: 1.5; }

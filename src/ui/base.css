@@ -22,9 +22,9 @@ button { background: none; border: 0; cursor: pointer; }
 .screen__title { font-size: 26px; font-weight: 600; letter-spacing: -0.015em; margin: 4px 0 16px; }
 
 .btn { min-height: 44px; padding: 0 16px; border-radius: var(--r-control); font-weight: 500; font-size: 16px; }
-.btn--primary { background: var(--ink); color: #fff; }
+.btn--primary { background: var(--ink); color: var(--on-ink); }
 .btn--quiet { background: var(--surface); border: 1px solid var(--line); }
-.btn--danger { background: var(--danger); color: #fff; }
+.btn--danger { background: var(--danger); color: var(--on-danger); }
 .btn--block { width: 100%; }
 .btn:disabled { opacity: 0.4; cursor: default; }
 

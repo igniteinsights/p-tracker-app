@@ -14,6 +14,7 @@ import { backupNudge } from './backupNudge';
 import { ImportFlow } from './ImportFlow';
 import { PrivacySection } from './PrivacySection';
 import { TRACKING } from '../../domain/tracking';
+import { getThemePref, setThemePref, type ThemePref } from '../theme';
 import './settings.css';
 
 function range(min: number, max: number) {
@@ -51,6 +52,7 @@ export function SettingsScreen({ data, onOpenHistory }: { data: DataState; onOpe
   const toast = useToast();
   const { entries, settings, meta, today } = data;
   const [importing, setImporting] = useState(false);
+  const [theme, setTheme] = useState<ThemePref>(getThemePref);
   const [deleting, setDeleting] = useState(false);
   const hasData = entries.length > 0;
   const nudge = backupNudge(meta, hasData);
@@ -106,6 +108,25 @@ export function SettingsScreen({ data, onOpenHistory }: { data: DataState; onOpe
             <span>Cycle history<small>See every cycle and choose which ones count</small></span>
             <span className="list__value" aria-hidden="true">›</span>
           </button>
+        </div>
+      </div>
+
+      <div className="group">
+        <h2 className="group__title">Appearance</h2>
+        <div className="list">
+          <div className="list__item">
+            <label htmlFor="theme">Theme</label>
+            <select
+              id="theme"
+              className="settings__select"
+              value={theme}
+              onChange={(e) => { const pref = e.target.value as ThemePref; setTheme(pref); setThemePref(pref); }}
+            >
+              <option value="system">Match phone</option>
+              <option value="light">Light</option>
+              <option value="dark">Dark</option>
+            </select>
+          </div>
         </div>
       </div>
 

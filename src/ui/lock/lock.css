@@ -21,7 +21,7 @@
 .keypad__key--quiet { background: transparent; border-color: transparent; font-size: 22px; color: var(--muted); }
 .keypad__extra { display: flex; align-items: center; justify-content: center; }
 
-.pin-sheet__prompt { font-size: 15px; color: #4A4148; margin: -2px 0 18px; text-align: center; }
+.pin-sheet__prompt { font-size: 15px; color: var(--text-2); margin: -2px 0 18px; text-align: center; }
 .pin-sheet__next { margin-top: 18px; min-height: 50px; }
-.privacy__statement { font-size: 14px; color: #4A4148; line-height: 1.45; margin: 0 0 10px; }
+.privacy__statement { font-size: 14px; color: var(--text-2); line-height: 1.45; margin: 0 0 10px; }
 .privacy__delete { color: var(--danger); }

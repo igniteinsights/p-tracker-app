@@ -34,3 +34,13 @@ describe('SettingsScreen extra tracking', () => {
     await waitFor(async () => expect((await repo.getSettings()).tracking).toEqual(['flow']));
   });
 });
+
+describe('SettingsScreen appearance', () => {
+  it('switches to the dark theme', async () => {
+    render(<ToastProvider><SettingsScreen data={data} onOpenHistory={() => {}} /></ToastProvider>);
+    await userEvent.selectOptions(screen.getByLabelText('Theme'), 'dark');
+    expect(document.documentElement.dataset.theme).toBe('dark');
+    await userEvent.selectOptions(screen.getByLabelText('Theme'), 'light');
+    expect(document.documentElement.dataset.theme).toBe('light');
+  });
+});

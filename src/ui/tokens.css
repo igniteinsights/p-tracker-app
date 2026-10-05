@@ -32,6 +32,33 @@
   --teal-soft: #DCEDEE;
   --danger: #A12A2A;
 
+  /* Text and fills that sit on other colours */
+  --text-2: #4A4148;
+  --on-ink: #FFFFFF;
+  --on-berry: #FFFFFF;
+  --on-teal: #FFFFFF;
+  --on-danger: #FFFFFF;
+  --on-ink-accent: #F1C9E0;
+  --on-ink-muted: #CFC4CC;
+  --border-control: #DCD3DA;
+  --dim-text: #B9B0B7;
+  --tag-bg: #ECE6EB;
+  --soft-outline: #E3CCDA;
+  --warn-bg: #FAEBDD;
+  --warn-text: #8A5320;
+  --error-bg: #FBEAEA;
+  --excluded-text: #A79DA5;
+  --grab: #D5CCD3;
+  --toggle-off: #DDD5DB;
+  --knob: #FFFFFF;
+  --hatch-current: #E9D3E1;
+  --overlay: rgba(30, 26, 29, 0.38);
+  --band-fill: rgba(255, 255, 255, 0.28);
+  --stage-follicular-text: #2B5E9E;
+  --stage-fertile-text: #7A4B08;
+  --stage-luteal-text: #2F3B70;
+
+  color-scheme: light;
   --font: 'Bricolage Grotesque Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;
 
   --r-group: 14px;
@@ -43,4 +70,64 @@
   --nav-h: 64px;
   --safe-top: env(safe-area-inset-top, 0px);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* Dark theme: chosen in Settings, or following the phone when set to System
+   (the attribute is set before first paint by the script in index.html). */
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --bg: #151215;
+  --surface: #1F1A1E;
+  --ink: #F2EEF1;
+  --muted: #A99FA8;
+  --line: #362F34;
+  --tile: #2A2328;
+  --tile-past: #463C43;
+  --berry: #D888B4;
+  --berry-soft: #3D2234;
+  --lilac: #8A6B80;
+  --teal: #5EC4C9;
+  --teal-soft: #173638;
+  --danger: #F08A8A;
+
+  --text-2: #D3CAD1;
+  --on-ink: #1A1418;
+  --on-berry: #1A1418;
+  --on-teal: #102224;
+  --on-danger: #1A1418;
+  --on-ink-accent: #7B2D5E;
+  --on-ink-muted: #5C525A;
+  --border-control: #4A4047;
+  --dim-text: #5E555B;
+  --tag-bg: #2E272C;
+  --soft-outline: #5C3C50;
+  --warn-bg: #3A2A16;
+  --warn-text: #E8B878;
+  --error-bg: #3A1C1E;
+  --excluded-text: #7A7078;
+  --grab: #4A4047;
+  --toggle-off: #4A4047;
+  --knob: #F2EEF1;
+  --hatch-current: #5A2E48;
+  --overlay: rgba(0, 0, 0, 0.6);
+  --band-fill: rgba(0, 0, 0, 0.22);
+  --stage-follicular-text: #8EBCF0;
+  --stage-fertile-text: #E8B05A;
+  --stage-luteal-text: #B3AEF2;
+
+  /* Stage colours re-validated for colour-blind separation on a dark surface */
+  --c-period: #C2558F;
+  --c-follicular: #3E92D6;
+  --c-fertile: #C4841C;
+  --c-luteal: #5F58BE;
+  --t-follicular: color-mix(in srgb, var(--c-follicular) 32%, var(--bg));
+  --t-luteal: color-mix(in srgb, var(--c-luteal) 38%, var(--bg));
+  --t-fertile: color-mix(in srgb, var(--c-fertile) 28%, var(--bg));
+  --t-fertile-stripe: color-mix(in srgb, var(--c-fertile) 44%, var(--bg));
+  --t-ovulation: color-mix(in srgb, var(--c-fertile) 58%, var(--bg));
+  --f-follicular: color-mix(in srgb, var(--c-follicular) 20%, var(--bg));
+  --f-luteal: color-mix(in srgb, var(--c-luteal) 22%, var(--bg));
+  --f-fertile: color-mix(in srgb, var(--c-fertile) 18%, var(--bg));
+  --f-fertile-stripe: color-mix(in srgb, var(--c-fertile) 30%, var(--bg));
+  --f-ovulation: color-mix(in srgb, var(--c-fertile) 40%, var(--bg));
 }

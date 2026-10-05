@@ -8,6 +8,10 @@ import { db } from './data';
 import { App } from './ui/App';
 import { NoStorage } from './pwa/NoStorage';
 import { listenForInstallPrompt } from './pwa/installPrompt';
+import { applyTheme, watchSystemTheme } from './ui/theme';
+
+applyTheme();
+watchSystemTheme();
 
 listenForInstallPrompt();
 

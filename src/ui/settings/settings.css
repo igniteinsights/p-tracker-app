@@ -5,9 +5,9 @@
 .list .toggle-row { padding: 10px 14px; background: var(--surface); }
 
 .sheet-title { font-size: 20px; font-weight: 600; margin-bottom: 10px; }
-.sheet-text { font-size: 15px; color: #4A4148; line-height: 1.45; margin-bottom: 16px; }
+.sheet-text { font-size: 15px; color: var(--text-2); line-height: 1.45; margin-bottom: 16px; }
 .sheet-text--small { font-size: 13px; color: var(--muted); margin: 12px 0 0; }
-.sheet-error { background: #FBEAEA; color: var(--danger); border-radius: var(--r-control); padding: 11px 13px; font-size: 14px; margin: 12px 0; }
+.sheet-error { background: var(--error-bg); color: var(--danger); border-radius: var(--r-control); padding: 11px 13px; font-size: 14px; margin: 12px 0; }
 
 .import__file { font-size: 13px; color: var(--muted); margin-bottom: 10px; word-break: break-all; }
 .import__summary { display: grid; gap: 2px 0; margin-bottom: 14px; }

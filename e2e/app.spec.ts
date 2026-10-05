@@ -188,3 +188,20 @@ test('extra tracking: switch on, log from the calendar, see it again', async ({ 
   await page.getByRole('button', { name: /, today/ }).click();
   await expect(page.getByRole('dialog').getByRole('button', { name: 'Heavy' })).toHaveAttribute('aria-pressed', 'true');
 });
+
+test.describe('dark mode', () => {
+  test.use({ colorScheme: 'dark' });
+
+  test('follows the phone, can be overridden, and remembers the choice', async ({ page }) => {
+    const bg = () => page.evaluate(() => getComputedStyle(document.body).backgroundColor);
+    await page.goto('/');
+    await expect(page.getByRole('navigation')).toBeVisible();
+    expect(await bg()).toBe('rgb(21, 18, 21)');
+    await page.getByRole('button', { name: 'Settings' }).click();
+    await page.getByLabel('Theme').selectOption('light');
+    expect(await bg()).toBe('rgb(251, 250, 251)');
+    await page.reload();
+    await expect(page.getByRole('navigation')).toBeVisible();
+    expect(await bg()).toBe('rgb(251, 250, 251)');
+  });
+});

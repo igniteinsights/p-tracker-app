@@ -12,6 +12,15 @@
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="/apple-touch-icon-180x180.png" />
     <title>p-tracker</title>
+    <script>
+      // Apply the saved theme before the first paint (mirrors src/ui/theme.ts)
+      try {
+        var pref = localStorage.getItem('p-tracker-theme');
+        var dark = pref === 'dark' || (pref !== 'light' && matchMedia('(prefers-color-scheme: dark)').matches);
+        document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+        document.querySelector('meta[name="theme-color"]').content = dark ? '#151215' : '#FBFAFB';
+      } catch (e) {}
+    </script>
   </head>
   <body>
     <div id="root"></div>

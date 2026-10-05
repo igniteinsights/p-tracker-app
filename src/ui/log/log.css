@@ -6,7 +6,7 @@
 .track { padding: 10px 0 12px; border-bottom: 1px solid var(--line); }
 .track__label { display: block; font-size: 16px; margin-bottom: 8px; }
 .track__options { display: flex; flex-wrap: wrap; gap: 6px; }
-.track__chip { min-height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid #DCD3DA; background: var(--surface); font-size: 14px; }
-.track__chip[aria-pressed='true'] { background: var(--ink); border-color: var(--ink); color: #fff; }
+.track__chip { min-height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--border-control); background: var(--surface); font-size: 14px; }
+.track__chip[aria-pressed='true'] { background: var(--ink); border-color: var(--ink); color: var(--on-ink); }
 .track__chip:disabled { opacity: 0.4; }
 .log__save { margin-top: 16px; min-height: 50px; }
