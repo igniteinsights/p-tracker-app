@@ -1,6 +1,7 @@
 import type { ISODate } from '../domain/dates';
 import { entryKey, normaliseEntries } from '../domain/entries';
-import { DEFAULT_SETTINGS, type Entry, type EntryType, type FlagType, type NewEntry, type Settings } from '../domain/types';
+import { DEFAULT_SETTINGS, type Entry, type EntryType, type FlagType, type NewEntry, type Settings, type TrackingType } from '../domain/types';
+import { isTrackingType, TRACKING_TYPES } from '../domain/tracking';
 import type { TrackerDB } from './db';
 import type { LockAfter } from '../pwa/pin';
 
@@ -26,9 +27,11 @@ export interface DayDraft {
   periodEnd: boolean;
   intimacy: boolean;
   note: string;
+  /** Chosen values for the extra tracking types */
+  tracking: Partial<Record<TrackingType, string>>;
 }
 
-export const EMPTY_DAY: DayDraft = { periodStart: false, periodEnd: false, intimacy: false, note: '' };
+export const EMPTY_DAY: DayDraft = { periodStart: false, periodEnd: false, intimacy: false, note: '', tracking: {} };
 
 export interface MergePlan {
   add: NewEntry[];
@@ -55,7 +58,7 @@ export interface Repo {
   deleteAll(): Promise<void>;
 }
 
-const FLAGS: [keyof Omit<DayDraft, 'note'>, FlagType][] = [
+const FLAGS: [keyof Omit<DayDraft, 'note' | 'tracking'>, FlagType][] = [
   ['periodStart', 'period-start'],
   ['periodEnd', 'period-end'],
   ['intimacy', 'intimacy'],
@@ -108,6 +111,7 @@ export function createRepo(db: TrackerDB): Repo {
         periodEnd: has('period-end'),
         intimacy: has('intimacy'),
         note: es.find((e) => e.type === 'note')?.text ?? '',
+        tracking: Object.fromEntries(es.filter((e) => isTrackingType(e.type) && e.value).map((e) => [e.type, e.value!])),
       };
     },
 
@@ -125,6 +129,15 @@ export function createRepo(db: TrackerDB): Repo {
           await db.entries.update(ex.id, { text: note });
           await log(ex.id, 'put');
         } else if (!note && ex) await remove(ex);
+        for (const type of TRACKING_TYPES) {
+          const value = draft.tracking[type];
+          const current = await findOne(date, type);
+          if (value && !current) await insert({ date, type, value });
+          else if (value && current && current.value !== value) {
+            await db.entries.update(current.id, { value });
+            await log(current.id, 'put');
+          } else if (!value && current) await remove(current);
+        }
       });
     },
 

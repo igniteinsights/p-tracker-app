@@ -146,3 +146,11 @@ describe('cycle stages', () => {
     expect(l.phase.get('2026-10-20')).toBe('period'); // predicted from today
   });
 });
+
+describe('tracking in the calendar', () => {
+  it('describes tracked values for screen readers', () => {
+    const es: NewEntry[] = [...entries, { date: '2026-10-02', type: 'flow', value: 'heavy' }, { date: '2026-10-02', type: 'mood', value: 'low' }];
+    const idx = buildCalendarIndex(es, predict(es, DEFAULT_SETTINGS, today), DEFAULT_SETTINGS, today);
+    expect(dayAriaLabel('2026-10-02', dayInfo('2026-10-02', idx, today))).toBe('2 October 2026, fertile, intimacy, heavy flow, low mood');
+  });
+});

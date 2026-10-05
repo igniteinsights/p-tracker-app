@@ -28,3 +28,16 @@ describe('TodayScreen', () => {
     expect(screen.queryByRole('button', { name: /Open calendar/ })).not.toBeInTheDocument();
   });
 });
+
+describe('TodayScreen stage line', () => {
+  it('names the current cycle stage', () => {
+    render(<ToastProvider><TodayScreen data={state(false)} onOpenCalendar={noop} onOpenLog={noop} onOpenSettings={noop} onOpenHistory={noop} /></ToastProvider>);
+    expect(screen.getByText('Luteal phase')).toBeInTheDocument();
+    expect(screen.getByText(/after ovulation, until your next period/i)).toBeInTheDocument();
+  });
+
+  it('is hidden when predictions are off', () => {
+    render(<ToastProvider><TodayScreen data={state(true)} onOpenCalendar={noop} onOpenLog={noop} onOpenSettings={noop} onOpenHistory={noop} /></ToastProvider>);
+    expect(screen.queryByText('Luteal phase')).not.toBeInTheDocument();
+  });
+});

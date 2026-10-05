@@ -30,5 +30,5 @@ To host elsewhere at the domain root (e.g. Cloudflare Pages), build with `npm ru
 
 ## Data formats
 
-- Backup: JSON, `schemaVersion: 1`, see `docs/superpowers/specs/2026-10-05-p-tracker-design.md` §5.2.
-- Spreadsheet export: CSV `date,type,note`.
+- Backup: JSON, `schemaVersion: 2` (see `docs/superpowers/specs/2026-10-05-p-tracker-design.md` §5.2). Version 2 adds extra tracking entries — `flow`, `pain`, `mood`, `energy`, each with a `value` — and `settings.tracking`, `settings.irregular`, `settings.excludedCycles`. Version 1 backups still import.
+- Spreadsheet export: CSV `date,type,value,note`.

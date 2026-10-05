@@ -1,8 +1,10 @@
 import { isValidISODate, pad2, todayISO, type ISODate } from '../domain/dates';
 import { normaliseEntries, sortEntries } from '../domain/entries';
-import { CYCLE_RANGE, DEFAULT_SETTINGS, ENTRY_TYPES, PERIOD_RANGE, type EntryType, type LengthSetting, type NewEntry, type Settings } from '../domain/types';
+import { isTrackingType, isValidTrackingValue } from '../domain/tracking';
+import { CYCLE_RANGE, DEFAULT_SETTINGS, ENTRY_TYPES, PERIOD_RANGE, type EntryType, type LengthSetting, type NewEntry, type Settings, type TrackingType } from '../domain/types';
 
-export const SCHEMA_VERSION = 1;
+/** 2 adds tracking entries (flow, pain, mood, energy) and settings.tracking. Version 1 still imports. */
+export const SCHEMA_VERSION = 2;
 
 export type BackupResult =
   | { ok: true; entries: NewEntry[]; settings: Settings }
@@ -26,7 +28,8 @@ export function serializeBackup(entries: readonly NewEntry[], settings: Settings
     schemaVersion: SCHEMA_VERSION,
     exportedAt: isoWithOffset(now),
     settings,
-    entries: sortEntries(entries).map(({ date, type, text }) => (type === 'note' ? { date, type, text } : { date, type })),
+    entries: sortEntries(entries).map(({ date, type, text, value }) =>
+      type === 'note' ? { date, type, text } : isTrackingType(type) ? { date, type, value } : { date, type }),
   };
   return `${JSON.stringify(file, null, 2)}\n`;
 }
@@ -62,7 +65,10 @@ export function parseBackup(text: string): BackupResult {
     if (typeof e.date !== 'string' || !isValidISODate(e.date)) return fail(`Entry ${n} has an invalid date.`);
     if (!ENTRY_TYPES.includes(e.type as EntryType)) return fail(`Entry ${n} has an unknown type.`);
     const type = e.type as EntryType;
-    if (type === 'note') {
+    if (isTrackingType(type)) {
+      if (!isValidTrackingValue(type, e.value)) return fail(`Entry ${n} has an unknown value.`);
+      entries.push({ date: e.date, type, value: e.value as string });
+    } else if (type === 'note') {
       if (typeof e.text !== 'string' || !e.text.trim()) return fail(`Entry ${n} is a note without text.`);
       entries.push({ date: e.date, type, text: e.text });
     } else {
@@ -78,11 +84,13 @@ export function parseBackup(text: string): BackupResult {
     if (!cycleLength || !periodLength || !isObj(s)) return fail('This backup has invalid settings.');
     const irregular = s.irregular ?? false;
     const excludedCycles = s.excludedCycles ?? [];
+    const tracking = s.tracking ?? [];
+    if (!Array.isArray(tracking) || !tracking.every((t) => typeof t === 'string' && isTrackingType(t))) return fail('This backup has invalid settings.');
     if (typeof irregular !== 'boolean') return fail('This backup has invalid settings.');
     if (!Array.isArray(excludedCycles) || !excludedCycles.every((d) => typeof d === 'string' && isValidISODate(d))) {
       return fail('This backup has invalid settings.');
     }
-    settings = { cycleLength, periodLength, irregular, excludedCycles: [...new Set(excludedCycles as string[])].sort() };
+    settings = { cycleLength, periodLength, irregular, excludedCycles: [...new Set(excludedCycles as string[])].sort(), tracking: [...new Set(tracking as TrackingType[])] };
   }
 
   return { ok: true, entries: normaliseEntries(entries), settings };

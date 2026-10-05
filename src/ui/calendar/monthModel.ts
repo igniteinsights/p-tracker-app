@@ -1,7 +1,8 @@
 import { addDays, daysInMonth, diffDays, MONTHS, pad2, weekdayIndex, type ISODate } from '../../domain/dates';
 import { buildCycles } from '../../domain/cycles';
 import { averagePeriodLength, periodLengthOf, upcomingPeriods, type Prediction } from '../../domain/predict';
-import { CYCLE_RANGE, type NewEntry, type Settings } from '../../domain/types';
+import { CYCLE_RANGE, type NewEntry, type Settings, type TrackingType } from '../../domain/types';
+import { isTrackingType, trackingSummary, TRACKING_TYPES } from '../../domain/tracking';
 
 export interface MonthRef { year: number; month: number }
 
@@ -39,6 +40,8 @@ export interface CalendarIndex {
   possible: Set<ISODate>;
   /** Cycle stage of each day, where it can be estimated */
   phase: Map<ISODate, Phase>;
+  /** Extra tracking values logged per day */
+  tracked: Map<ISODate, Partial<Record<TrackingType, string>>>;
 }
 
 export type Phase = 'period' | 'follicular' | 'fertile' | 'ovulation' | 'luteal';
@@ -77,7 +80,7 @@ export function buildCalendarIndex(
   settings: Settings,
   today: ISODate,
 ): CalendarIndex {
-  const idx: CalendarIndex = { period: new Set(), predicted: new Set(), fertile: new Set(), intimacy: new Set(), note: new Set(), possible: new Set(), phase: new Map() };
+  const idx: CalendarIndex = { period: new Set(), predicted: new Set(), fertile: new Set(), intimacy: new Set(), note: new Set(), possible: new Set(), phase: new Map(), tracked: new Map() };
   const showPredictions = !!prediction && !prediction.stale && !prediction.irregular;
   const cycles = buildCycles(entries, today);
   const avgPeriod = averagePeriodLength(cycles, settings);
@@ -112,6 +115,7 @@ export function buildCalendarIndex(
   for (const e of entries) {
     if (e.type === 'intimacy') idx.intimacy.add(e.date);
     if (e.type === 'note') idx.note.add(e.date);
+    if (isTrackingType(e.type) && e.value) idx.tracked.set(e.date, { ...idx.tracked.get(e.date), [e.type]: e.value });
   }
   return idx;
 }
@@ -124,6 +128,7 @@ export interface DayInfo {
   note: boolean;
   possible: boolean;
   phase: Phase | null;
+  tracked: Partial<Record<TrackingType, string>> | null;
   today: boolean;
   future: boolean;
 }
@@ -137,6 +142,7 @@ export function dayInfo(date: ISODate, idx: CalendarIndex, today: ISODate): DayI
     note: idx.note.has(date),
     possible: idx.possible.has(date),
     phase: idx.phase.get(date) ?? null,
+    tracked: idx.tracked.get(date) ?? null,
     today: date === today,
     future: date > today,
   };
@@ -154,6 +160,7 @@ export function dayAriaLabel(date: ISODate, info: DayInfo): string {
   if (info.phase === 'fertile') parts.push('fertile');
   if (info.phase === 'ovulation') parts.push('estimated ovulation');
   if (info.intimacy) parts.push('intimacy');
+  for (const t of TRACKING_TYPES) if (info.tracked?.[t]) parts.push(trackingSummary(t, info.tracked[t]!));
   if (info.note) parts.push('note');
   return parts.join(', ');
 }

@@ -49,6 +49,7 @@ export const Month = memo(function Month({ month, index, today, filter, onOpenDa
               {Number(date.slice(8))}
               {!filtered && info.intimacy && <i className="day__dot" aria-hidden="true" />}
               {!filtered && info.note && <b className="day__note" aria-hidden="true" />}
+              {!filtered && info.tracked && <u className="day__track" aria-hidden="true" />}
             </button>
           );
         })}

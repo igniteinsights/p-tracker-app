@@ -62,7 +62,7 @@ describe('ImportFlow', () => {
   });
 
   it('requires a second confirmation to replace everything', async () => {
-    await repo.saveDay('2020-01-01', { periodStart: false, periodEnd: false, intimacy: true, note: '' });
+    await repo.saveDay('2020-01-01', { periodStart: false, periodEnd: false, intimacy: true, note: '', tracking: {} });
     setup(true);
     await choose('Default_User.myd', sample);
     await userEvent.click(await screen.findByRole('button', { name: 'Replace everything' }));

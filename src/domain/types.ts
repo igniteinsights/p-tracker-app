@@ -1,14 +1,17 @@
 import type { ISODate } from './dates';
 
-export type EntryType = 'period-start' | 'period-end' | 'intimacy' | 'note';
-export type FlagType = Exclude<EntryType, 'note'>;
-export const ENTRY_TYPES: readonly EntryType[] = ['period-start', 'period-end', 'intimacy', 'note'];
+export type TrackingType = 'flow' | 'pain' | 'mood' | 'energy';
+export type FlagType = 'period-start' | 'period-end' | 'intimacy';
+export type EntryType = FlagType | TrackingType | 'note';
+export const ENTRY_TYPES: readonly EntryType[] = ['period-start', 'period-end', 'intimacy', 'flow', 'pain', 'mood', 'energy', 'note'];
 
 export interface Entry {
   id: string;
   date: ISODate;
   type: EntryType;
   text?: string;
+  /** Chosen option for tracking types, e.g. 'heavy' for flow */
+  value?: string;
 }
 
 export type NewEntry = Omit<Entry, 'id'>;
@@ -25,6 +28,8 @@ export interface Settings {
   irregular: boolean;
   /** Start dates of cycles left out of averages and ranges. */
   excludedCycles: ISODate[];
+  /** Extra tracking types switched on in Settings */
+  tracking: TrackingType[];
 }
 
 export const DEFAULT_SETTINGS: Settings = {
@@ -32,6 +37,7 @@ export const DEFAULT_SETTINGS: Settings = {
   periodLength: { mode: 'auto', value: 5 },
   irregular: false,
   excludedCycles: [],
+  tracking: [],
 };
 
 export const CYCLE_RANGE = { min: 18, max: 45, fallback: 28 } as const;

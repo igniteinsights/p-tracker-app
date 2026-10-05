@@ -51,6 +51,8 @@
 .day--hit-period { background: var(--berry-soft); color: var(--berry); }
 .day--hit-notes { background: #ECE6EB; color: var(--ink); }
 .day--today.day--hit { background: var(--ink); color: #fff; }
+.day__track { position: absolute; top: 5px; left: 6px; width: 5px; height: 5px; border-radius: 50%; background: var(--ink); opacity: 0.55; }
+.day--labelled .day__track { display: none; }
 .month__count { color: var(--ink); font-weight: 600; margin-right: 8px; }
 
 .legend { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 12px; color: var(--muted); padding-top: 4px; }
@@ -65,6 +67,7 @@
 .legend__dot { width: 8px; height: 8px; border-radius: 50%; background: var(--teal); display: inline-block; }
 .legend__note { width: 7px; height: 7px; border-radius: 2px; border: 1.5px solid var(--muted); display: inline-block; }
 
+.legend__track { width: 6px; height: 6px; border-radius: 50%; background: var(--ink); opacity: 0.55; display: inline-block; }
 .stages { display: grid; gap: 8px; margin: 6px 0 14px; padding: 12px 14px; border: 1px solid var(--line); border-radius: var(--r-group); background: var(--surface); }
 .stages dt { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 500; }
 .stages dd { font-size: 13px; color: var(--muted); margin-left: 22px; }

@@ -4,7 +4,11 @@ const TYPE_ORDER: Record<EntryType, number> = {
   'period-start': 0,
   'period-end': 1,
   intimacy: 2,
-  note: 3,
+  flow: 3,
+  pain: 4,
+  mood: 5,
+  energy: 6,
+  note: 7,
 };
 
 export const entryKey = (e: Pick<NewEntry, 'date' | 'type'>): string => `${e.date}|${e.type}`;
@@ -26,6 +30,8 @@ export function normaliseEntries(es: readonly NewEntry[]): NewEntry[] {
       const list = notes.get(e.date) ?? [];
       if (!list.includes(text)) list.push(text);
       notes.set(e.date, list);
+    } else if (e.value !== undefined) {
+      flags.set(entryKey(e), { date: e.date, type: e.type, value: e.value });
     } else {
       flags.set(entryKey(e), { date: e.date, type: e.type });
     }

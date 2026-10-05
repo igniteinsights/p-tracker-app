@@ -4,14 +4,14 @@ import userEvent from '@testing-library/user-event';
 import { LogSheet } from './LogSheet';
 import { ToastProvider } from '../common/Toast';
 import { repo } from '../../data';
-import type { Entry } from '../../domain/types';
+import type { Entry, TrackingType } from '../../domain/types';
 
-function setup(date: string, entries: Entry[] = []) {
+function setup(date: string, entries: Entry[] = [], tracking: TrackingType[] = []) {
   const onClose = vi.fn();
   const onChangeDate = vi.fn();
   render(
     <ToastProvider>
-      <LogSheet date={date} entries={entries} today="2026-10-05" focusNote={false} onClose={onClose} onChangeDate={onChangeDate} />
+      <LogSheet date={date} entries={entries} today="2026-10-05" focusNote={false} tracking={tracking} onClose={onClose} onChangeDate={onChangeDate} />
     </ToastProvider>,
   );
   return { onClose, onChangeDate };
@@ -26,7 +26,7 @@ describe('LogSheet', () => {
     await userEvent.type(screen.getByRole('textbox', { name: 'Note' }), 'Felt tired');
     await userEvent.click(screen.getByRole('button', { name: 'Save' }));
     await waitFor(() => expect(onClose).toHaveBeenCalled());
-    expect(await repo.getDay('2026-10-03')).toEqual({ periodStart: false, periodEnd: false, intimacy: true, note: 'Felt tired' });
+    expect(await repo.getDay('2026-10-03')).toEqual({ periodStart: false, periodEnd: false, intimacy: true, note: 'Felt tired', tracking: {} });
   });
 
   it('asks before discarding unsaved changes', async () => {
@@ -50,7 +50,7 @@ describe('LogSheet', () => {
   });
 
   it('lets an existing entry on a future day be turned off', async () => {
-    await repo.saveDay('2026-10-20', { periodStart: true, periodEnd: false, intimacy: false, note: '' });
+    await repo.saveDay('2026-10-20', { periodStart: true, periodEnd: false, intimacy: false, note: '', tracking: {} });
     const { onClose } = setup('2026-10-20');
     const toggle = await screen.findByRole('switch', { name: 'Period started' });
     await waitFor(() => expect(toggle).toBeEnabled());
@@ -78,5 +78,25 @@ describe('LogSheet', () => {
     const { onChangeDate } = setup('2026-10-03');
     await userEvent.click(await screen.findByRole('button', { name: 'Next day' }));
     expect(onChangeDate).toHaveBeenCalledWith('2026-10-04');
+  });
+});
+
+describe('LogSheet extra tracking', () => {
+  it('shows only the tracking types that are switched on', async () => {
+    setup('2026-10-03', [], ['flow']);
+    expect(await screen.findByRole('group', { name: 'Flow' })).toBeInTheDocument();
+    expect(screen.queryByRole('group', { name: 'Mood' })).not.toBeInTheDocument();
+  });
+
+  it('saves a chosen value and lets it be cleared by tapping again', async () => {
+    const { onClose } = setup('2026-10-03', [], ['flow', 'mood']);
+    const heavy = await screen.findByRole('button', { name: 'Heavy' });
+    await userEvent.click(heavy);
+    expect(heavy).toHaveAttribute('aria-pressed', 'true');
+    await userEvent.click(screen.getByRole('button', { name: 'Low' }));
+    await userEvent.click(screen.getByRole('button', { name: 'Low' }));
+    await userEvent.click(screen.getByRole('button', { name: 'Save' }));
+    await waitFor(() => expect(onClose).toHaveBeenCalled());
+    expect((await repo.getDay('2026-10-03')).tracking).toEqual({ flow: 'heavy' });
   });
 });

@@ -13,6 +13,7 @@ import { useToast } from '../common/Toast';
 import { backupNudge } from './backupNudge';
 import { ImportFlow } from './ImportFlow';
 import { PrivacySection } from './PrivacySection';
+import { TRACKING } from '../../domain/tracking';
 import './settings.css';
 
 function range(min: number, max: number) {
@@ -106,6 +107,22 @@ export function SettingsScreen({ data, onOpenHistory }: { data: DataState; onOpe
             <span className="list__value" aria-hidden="true">›</span>
           </button>
         </div>
+      </div>
+
+      <div className="group">
+        <h2 className="group__title">Extra tracking</h2>
+        <div className="list">
+          {TRACKING.map((t) => (
+            <Toggle
+              key={t.type}
+              label={t.type === 'flow' ? 'Flow level' : t.type === 'pain' ? 'Pain / cramps' : t.label}
+              hint={t.options.map((o) => o.label).join(', ')}
+              checked={settings.tracking.includes(t.type)}
+              onChange={(on) => update({ tracking: on ? [...settings.tracking, t.type] : settings.tracking.filter((x) => x !== t.type) })}
+            />
+          ))}
+        </div>
+        <p className="settings__disclaimer">Switched-on types appear when you log a day.</p>
       </div>
 
       <PrivacySection meta={meta} hasData={hasData} onExport={() => void exportJson()} onDeleteAll={() => setDeleting(true)} />

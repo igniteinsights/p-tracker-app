@@ -37,7 +37,7 @@ test('import MyDays, log a day, add a note, export a backup', async ({ page }) =
   const download = await downloadPromise;
   expect(download.suggestedFilename()).toMatch(/^p-tracker-export-\d{4}-\d{2}-\d{2}\.json$/);
   const backup = JSON.parse(readFileSync(await download.path(), 'utf8'));
-  expect(backup.schemaVersion).toBe(1);
+  expect(backup.schemaVersion).toBe(2);
   expect(backup.entries).toHaveLength(16);
   expect(backup.entries.some((e: { text?: string }) => e.text === 'E2E note, with "quotes"')).toBe(true);
 });
@@ -170,4 +170,21 @@ test('PIN lock hides the app on reopen until the PIN is entered', async ({ page 
   await expect(page.getByText(/Wrong PIN/)).toBeVisible();
   for (const d of '2468') await page.getByRole('button', { name: d, exact: true }).click();
   await expect(page.getByRole('navigation')).toBeVisible();
+});
+
+test('extra tracking: switch on, log from the calendar, see it again', async ({ page }) => {
+  await page.goto('/');
+  await page.getByRole('button', { name: 'Settings' }).click();
+  await page.getByRole('switch', { name: /Flow level/ }).click();
+  await page.getByRole('switch', { name: /^Mood/ }).click();
+  await page.getByRole('button', { name: 'Calendar', exact: true }).click();
+  await page.getByRole('button', { name: /, today/ }).click();
+  const sheet = page.getByRole('dialog');
+  await sheet.getByRole('group', { name: 'Flow' }).getByRole('button', { name: 'Heavy' }).click();
+  await sheet.getByRole('group', { name: 'Mood' }).getByRole('button', { name: 'Anxious' }).click();
+  await sheet.getByRole('button', { name: 'Save' }).click();
+  await expect(page.getByText('Saved')).toBeVisible();
+  await expect(page.getByRole('button', { name: /, today.*heavy flow, anxious mood/ })).toBeVisible();
+  await page.getByRole('button', { name: /, today/ }).click();
+  await expect(page.getByRole('dialog').getByRole('button', { name: 'Heavy' })).toHaveAttribute('aria-pressed', 'true');
 });

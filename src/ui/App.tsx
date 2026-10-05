@@ -43,6 +43,7 @@ export function App() {
             entries={data.entries}
             today={data.today}
             focusNote={log.focusNote}
+            tracking={data.settings.tracking}
             onClose={() => setLog(null)}
             onChangeDate={(date) => setLog({ date, focusNote: false })}
           />

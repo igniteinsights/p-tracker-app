@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useState } from 'react';
 import { nearbyStartGap } from '../../domain/cycles';
 import { addDays, diffDays, formatLong, type ISODate } from '../../domain/dates';
-import type { Entry } from '../../domain/types';
+import type { Entry, TrackingType } from '../../domain/types';
+import { trackingDef } from '../../domain/tracking';
 import { repo, type DayDraft } from '../../data';
 import { ensurePersisted } from '../../pwa/storage';
 import { ConfirmDialog } from '../common/ConfirmDialog';
@@ -17,13 +18,15 @@ interface LogSheetProps {
   entries: readonly Entry[];
   today: ISODate;
   focusNote: boolean;
+  /** Extra tracking types switched on in Settings */
+  tracking?: readonly TrackingType[];
   onClose: () => void;
   onChangeDate: (date: ISODate) => void;
 }
 
 type Pending = { kind: 'discard'; then: () => void } | { kind: 'soon'; gap: number; after: boolean };
 
-export function LogSheet({ date, entries, today, focusNote, onClose, onChangeDate }: LogSheetProps) {
+export function LogSheet({ date, entries, today, focusNote, tracking = [], onClose, onChangeDate }: LogSheetProps) {
   const toast = useToast();
   const [orig, setOrig] = useState<DayDraft | null>(null);
   const [draft, setDraft] = useState<DayDraft | null>(null);
@@ -78,6 +81,30 @@ export function LogSheet({ date, entries, today, focusNote, onClose, onChangeDat
           <Toggle label="Period started" checked={draft.periodStart} disabled={future && !orig?.periodStart} onChange={(v) => set({ periodStart: v })} />
           <Toggle label="Period ended" hint="Optional, otherwise estimated" checked={draft.periodEnd} disabled={future && !orig?.periodEnd} onChange={(v) => set({ periodEnd: v })} />
           <Toggle label="Intimacy" checked={draft.intimacy} disabled={future && !orig?.intimacy} onChange={(v) => set({ intimacy: v })} />
+          {tracking.map((type) => {
+            const def = trackingDef(type);
+            const chosen = draft.tracking[type];
+            const locked = future && !orig?.tracking[type];
+            return (
+              <div key={type} className="track" role="group" aria-label={def.label}>
+                <span className="track__label">{def.label}</span>
+                <div className="track__options">
+                  {def.options.map((o) => (
+                    <button
+                      key={o.value}
+                      type="button"
+                      className="track__chip"
+                      aria-pressed={chosen === o.value}
+                      disabled={locked}
+                      onClick={() => set({ tracking: { ...draft.tracking, [type]: chosen === o.value ? undefined : o.value } })}
+                    >
+                      {o.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            );
+          })}
           <textarea
             className="textarea log__note"
             aria-label="Note"

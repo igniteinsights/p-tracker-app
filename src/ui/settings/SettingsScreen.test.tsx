@@ -26,3 +26,11 @@ describe('SettingsScreen predictions', () => {
     expect(onOpenHistory).toHaveBeenCalled();
   });
 });
+
+describe('SettingsScreen extra tracking', () => {
+  it('switches on a tracking type', async () => {
+    render(<ToastProvider><SettingsScreen data={data} onOpenHistory={() => {}} /></ToastProvider>);
+    await userEvent.click(screen.getByRole('switch', { name: /Flow level/ }));
+    await waitFor(async () => expect((await repo.getSettings()).tracking).toEqual(['flow']));
+  });
+});

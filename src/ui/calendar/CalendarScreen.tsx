@@ -62,6 +62,7 @@ export function CalendarScreen({ data, onOpenLog }: { data: DataState; onOpenLog
         <span><em className="legend__swatch legend__swatch--possible" />Possible start</span>
         <span><em className="legend__dot" />Intimacy</span>
         <span><em className="legend__note" />Note</span>
+        <span><em className="legend__track" />Extra tracking</span>
         <span>Paler days are predictions</span>
       </div>
     </section>

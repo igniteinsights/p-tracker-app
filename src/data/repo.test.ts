@@ -54,8 +54,8 @@ describe('planMerge', () => {
 
 describe('repo', () => {
   it('saves and reads a day, removing cleared items', async () => {
-    await repo.saveDay('2024-01-05', { periodStart: true, periodEnd: false, intimacy: true, note: ' hello ' });
-    expect(await repo.getDay('2024-01-05')).toEqual({ periodStart: true, periodEnd: false, intimacy: true, note: 'hello' });
+    await repo.saveDay('2024-01-05', { periodStart: true, periodEnd: false, intimacy: true, note: ' hello ', tracking: {} });
+    expect(await repo.getDay('2024-01-05')).toEqual({ periodStart: true, periodEnd: false, intimacy: true, note: 'hello', tracking: {} });
     await repo.saveDay('2024-01-05', EMPTY_DAY);
     expect(await repo.getDay('2024-01-05')).toEqual(EMPTY_DAY);
     expect(await repo.listEntries()).toEqual([]);
@@ -115,5 +115,17 @@ describe('repo', () => {
     expect(await repo.listEntries()).toEqual([]);
     expect(await repo.getSettings()).toEqual(DEFAULT_SETTINGS);
     expect((await repo.getMeta()).iosHintDismissed).toBe(true);
+  });
+});
+
+describe('repo tracking values', () => {
+  it('saves, updates and clears tracking values for a day', async () => {
+    await repo.saveDay('2024-01-05', { ...EMPTY_DAY, tracking: { flow: 'heavy', mood: 'low' } });
+    expect((await repo.getDay('2024-01-05')).tracking).toEqual({ flow: 'heavy', mood: 'low' });
+    await repo.saveDay('2024-01-05', { ...EMPTY_DAY, tracking: { flow: 'light' } });
+    expect((await repo.getDay('2024-01-05')).tracking).toEqual({ flow: 'light' });
+    expect((await repo.listEntries()).filter((e) => e.type === 'flow')).toHaveLength(1);
+    await repo.saveDay('2024-01-05', EMPTY_DAY);
+    expect(await repo.listEntries()).toEqual([]);
   });
 });

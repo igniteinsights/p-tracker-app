@@ -33,7 +33,7 @@ describe('summarise', () => {
     const r = detectAndParse('x.myd', sample);
     if (!r.ok) throw new Error(r.error);
     expect(summarise(r.entries)).toEqual({
-      counts: { 'period-start': 8, 'period-end': 1, intimacy: 2, note: 3 },
+      counts: { 'period-start': 8, 'period-end': 1, intimacy: 2, flow: 0, pain: 0, mood: 0, energy: 0, note: 3 },
       first: '2023-06-01',
       last: '2024-01-20',
     });

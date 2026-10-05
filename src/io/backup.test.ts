@@ -23,14 +23,14 @@ describe('backup', () => {
   it('writes the agreed shape', () => {
     const file = JSON.parse(serializeBackup(entries, DEFAULT_SETTINGS, new Date(2026, 9, 5, 9, 40)));
     expect(file.app).toBe('p-tracker');
-    expect(file.schemaVersion).toBe(1);
+    expect(file.schemaVersion).toBe(2);
     expect(file.exportedAt).toMatch(/^2026-10-05T09:40:00[+-]\d{2}:\d{2}$/);
     expect(file.entries[0]).toEqual({ date: '2023-05-17', type: 'note', text: entries[2].text });
     expect(file.entries[2]).toEqual({ date: '2024-03-21', type: 'period-start' });
   });
 
   it('rejects newer schema versions', () => {
-    const r = parseBackup(JSON.stringify({ app: 'p-tracker', schemaVersion: 2, entries: [] }));
+    const r = parseBackup(JSON.stringify({ app: 'p-tracker', schemaVersion: 3, entries: [] }));
     expect(r).toEqual({ ok: false, error: 'This backup is from a newer version of p-tracker. Update the app and try again.' });
   });
 
@@ -61,5 +61,28 @@ describe('backup', () => {
   it('names export files by date', () => {
     expect(exportFilename('json', '2026-10-05')).toBe('p-tracker-export-2026-10-05.json');
     expect(exportFilename('csv', '2026-10-05')).toBe('p-tracker-export-2026-10-05.csv');
+  });
+});
+
+describe('backup tracking values (schema 2)', () => {
+  it('round-trips tracking values and enabled tracking types', () => {
+    const es: NewEntry[] = [
+      { date: '2024-01-02', type: 'flow', value: 'heavy' },
+      { date: '2024-01-02', type: 'pain', value: 'mild' },
+      { date: '2024-01-03', type: 'mood', value: 'anxious' },
+      { date: '2024-01-03', type: 'energy', value: 'low' },
+    ];
+    const s: Settings = { ...DEFAULT_SETTINGS, tracking: ['flow', 'pain', 'mood', 'energy'] };
+    expect(parseBackup(serializeBackup(es, s))).toEqual({ ok: true, entries: es, settings: s });
+  });
+
+  it('still reads version 1 backups', () => {
+    const v1 = { app: 'p-tracker', schemaVersion: 1, entries: [{ date: '2024-01-01', type: 'period-start' }] };
+    expect(parseBackup(JSON.stringify(v1))).toEqual({ ok: true, entries: [{ date: '2024-01-01', type: 'period-start' }], settings: DEFAULT_SETTINGS });
+  });
+
+  it('rejects unknown tracking values', () => {
+    const bad = { app: 'p-tracker', schemaVersion: 2, entries: [{ date: '2024-01-01', type: 'flow', value: 'torrential' }] };
+    expect(parseBackup(JSON.stringify(bad))).toEqual({ ok: false, error: 'Entry 1 has an unknown value.' });
   });
 });

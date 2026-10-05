@@ -3,4 +3,10 @@
 .log__nav { display: flex; }
 .log__nav button { width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; color: var(--muted); border-radius: var(--r-control); }
 .log__note { margin-top: 14px; }
+.track { padding: 10px 0 12px; border-bottom: 1px solid var(--line); }
+.track__label { display: block; font-size: 16px; margin-bottom: 8px; }
+.track__options { display: flex; flex-wrap: wrap; gap: 6px; }
+.track__chip { min-height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid #DCD3DA; background: var(--surface); font-size: 14px; }
+.track__chip[aria-pressed='true'] { background: var(--ink); border-color: var(--ink); color: #fff; }
+.track__chip:disabled { opacity: 0.4; }
 .log__save { margin-top: 16px; min-height: 50px; }

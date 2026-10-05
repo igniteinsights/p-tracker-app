@@ -45,7 +45,7 @@ describe('LockScreen', () => {
   });
 
   it('can erase everything when the PIN is forgotten', async () => {
-    await repo.saveDay('2026-10-01', { periodStart: false, periodEnd: false, intimacy: true, note: '' });
+    await repo.saveDay('2026-10-01', { periodStart: false, periodEnd: false, intimacy: true, note: '', tracking: {} });
     const meta = await metaWithPin();
     await repo.setMeta(meta);
     const onUnlock = vi.fn();
