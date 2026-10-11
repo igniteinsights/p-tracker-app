@@ -6,6 +6,9 @@ import { isTrackingType, trackingSummary, TRACKING_TYPES } from '../../domain/tr
 
 export interface MonthRef { year: number; month: number }
 
+/** How far ahead the calendar shows predicted cycles */
+export const FORECAST_MONTHS = 6;
+
 export const monthKey = (m: MonthRef) => `${m.year}-${pad2(m.month)}`;
 
 export function monthCells(m: MonthRef): (ISODate | null)[] {
@@ -17,7 +20,7 @@ export function monthCells(m: MonthRef): (ISODate | null)[] {
 
 const toRef = (d: ISODate): MonthRef => ({ year: Number(d.slice(0, 4)), month: Number(d.slice(5, 7)) });
 
-export function monthRange(entries: readonly Pick<NewEntry, 'date'>[], today: ISODate, ahead = 3): MonthRef[] {
+export function monthRange(entries: readonly Pick<NewEntry, 'date'>[], today: ISODate, ahead = FORECAST_MONTHS): MonthRef[] {
   let first = today;
   for (const e of entries) if (e.date < first) first = e.date;
   const start = toRef(first);
@@ -98,7 +101,8 @@ export function buildCalendarIndex(
     else for (let i = 0; i < periodLengthOf(c, avgPeriod); i++) idx.phase.set(addDays(c.start, i), 'period');
   }
   if (prediction && showPredictions) {
-    const upcoming = upcomingPeriods(prediction);
+    // Enough cycles to fill every forecast month
+    const upcoming = upcomingPeriods(prediction, Math.ceil(((FORECAST_MONTHS + 1) * 31) / prediction.avgCycle));
     // Current cycle up to the expected start; while late it stays luteal until today
     idx.phase.forEach((p, d) => { if (d >= prediction.lastStart && p !== 'period') idx.phase.delete(d); });
     shadeCycle(idx.phase, prediction.lastStart, prediction.nextStart, prediction.lastPeriodLength);

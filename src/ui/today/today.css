@@ -84,7 +84,7 @@
 .mini__day--fertile.mini__day--future { background: var(--hatch-fertile-future); }
 .mini__day--ovulation { background: var(--t-ovulation); }
 .mini__day--period { background: var(--berry-soft); color: var(--berry); font-weight: 600; }
-.mini__day--predicted { background: var(--surface); box-shadow: inset 0 0 0 1px var(--predicted-outline); color: var(--berry); border-radius: 5px; }
+.mini__day--predicted { background: var(--f-period); color: var(--berry); }
 .mini__day--today { box-shadow: inset 0 0 0 1.5px var(--ink); font-weight: 700; border-radius: 5px; }
 
 .this-cycle { margin-bottom: 22px; }

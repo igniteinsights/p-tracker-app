@@ -18,7 +18,6 @@
 .month__dow { color: var(--muted); font-size: 11px; padding-bottom: 4px; }
 
 .day { position: relative; height: 44px; display: flex; align-items: center; justify-content: center; border-radius: var(--r-day); }
-.day--predicted { box-shadow: inset 0 0 0 1.5px var(--predicted-outline); color: var(--berry); font-weight: 600; }
 .day--period { background: var(--berry-soft); color: var(--berry); font-weight: 500; }
 /* Stage tints: each stage is one continuous band per row */
 .day--follicular, .day--luteal, .day--fertile, .day--ovulation, .day--period { border-radius: 0; }
@@ -32,7 +31,7 @@
 .day--fertile.day--future { background: var(--hatch-fertile-future); }
 .day--ovulation { background: var(--t-ovulation); }
 .day--ovulation.day--future { background: var(--f-ovulation); }
-.day--predicted { background: var(--bg); border-radius: 7px; }
+.day--predicted { background: var(--f-period); color: var(--berry); font-weight: 500; }
 .day--labelled { padding-top: 9px; }
 .day__stage { position: absolute; top: 3px; left: 4px; font-size: 9px; font-weight: 600; line-height: 1; white-space: nowrap; z-index: 1; }
 .day__stage--follicular { color: var(--stage-follicular-text); }
@@ -44,6 +43,7 @@
 .day--possible { outline: 1.5px dashed var(--predicted-outline); outline-offset: -2px; }
 .day__dot { position: absolute; bottom: 4px; width: 7px; height: 7px; border-radius: 50%; background: var(--teal); box-shadow: 0 0 0 1.5px var(--bg); }
 .day--period .day__dot { box-shadow: 0 0 0 1.5px var(--berry-soft); }
+.day--predicted .day__dot { box-shadow: 0 0 0 1.5px var(--f-period); }
 .day__note { position: absolute; top: 4px; right: 5px; width: 6px; height: 6px; border-radius: 2px; border: 1.5px solid var(--muted); }
 .day--dim { color: var(--dim-text); }
 .day--hit { font-weight: 600; }
@@ -59,7 +59,7 @@
 .legend span { display: flex; align-items: center; gap: 6px; }
 .legend__swatch { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
 .legend__swatch--period { background: var(--berry-soft); }
-.legend__swatch--predicted { box-shadow: inset 0 0 0 1.5px var(--predicted-outline); }
+.legend__swatch--predicted { background: var(--f-period); }
 .legend__swatch--follicular { background: var(--t-follicular); }
 .legend__swatch--luteal { background: var(--t-luteal); }
 .legend__swatch--fertile { background: var(--hatch-fertile); }

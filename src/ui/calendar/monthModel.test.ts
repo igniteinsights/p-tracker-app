@@ -23,11 +23,11 @@ describe('monthCells', () => {
 });
 
 describe('monthRange', () => {
-  it('runs from the first entry to three months after today', () => {
+  it('runs from the first entry to six months after today', () => {
     const r = monthRange(entries, today);
     expect(r[0]).toEqual({ year: 2026, month: 8 });
-    expect(r.at(-1)).toEqual({ year: 2027, month: 1 });
-    expect(r).toHaveLength(6);
+    expect(r.at(-1)).toEqual({ year: 2027, month: 4 });
+    expect(r).toHaveLength(9);
   });
   it('shows the current month when there is no data', () => {
     expect(monthRange([], today, 0)).toEqual([{ year: 2026, month: 10 }]);
@@ -47,6 +47,12 @@ describe('buildCalendarIndex', () => {
   it('marks predicted periods and the current fertile window', () => {
     expect(idx.predicted.has('2026-10-17')).toBe(true);
     expect(idx.fertile.has('2026-10-01')).toBe(true);
+  });
+
+  it('forecasts periods and stages through the last month shown', () => {
+    const lastMonth = [...idx.predicted].filter((d) => d.startsWith('2027-04'));
+    expect(lastMonth.length).toBeGreaterThan(0);
+    expect(idx.phase.get('2027-04-30')).not.toBeUndefined();
   });
 
   it('describes a day for screen readers', () => {

@@ -27,6 +27,8 @@
   --f-fertile-stripe: color-mix(in srgb, var(--c-fertile) 22%, var(--bg));
   --f-ovulation: color-mix(in srgb, var(--c-fertile) 30%, var(--bg));
   --predicted-outline: color-mix(in srgb, var(--c-period) 55%, var(--bg));
+  /* Predicted period: the period colour, paler like the other future stages */
+  --f-period: color-mix(in srgb, var(--c-period) 11%, var(--bg));
   --hatch-fertile: repeating-linear-gradient(135deg, var(--t-fertile-stripe) 0 2px, var(--t-fertile) 2px 6px);
   --hatch-fertile-future: repeating-linear-gradient(135deg, var(--f-fertile-stripe) 0 2px, var(--f-fertile) 2px 6px);
   --teal-soft: #DCEDEE;
@@ -129,4 +131,5 @@
   --f-fertile: color-mix(in srgb, var(--c-fertile) 18%, var(--bg));
   --f-fertile-stripe: color-mix(in srgb, var(--c-fertile) 30%, var(--bg));
   --f-ovulation: color-mix(in srgb, var(--c-fertile) 40%, var(--bg));
+  --f-period: color-mix(in srgb, var(--c-period) 16%, var(--bg));
 }
