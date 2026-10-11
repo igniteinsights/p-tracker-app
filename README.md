@@ -26,6 +26,8 @@ The local-only test `tests/local/real-history.test.ts` checks a real MyDays expo
 
 Every push to `main` runs `.github/workflows/deploy.yml`: install, unit tests, build with `BASE_PATH=/<repo>/`, then publish `dist` to GitHub Pages.
 
+Each build is numbered `major.minor.<commit count>` (so a deploy needs full git history) and writes `version.json` with that number and the release notes. When a change is worth telling people about, add a plain-language line to the top of `src/pwa/releaseNotes.json` in the same commit, under the version that commit will become (the current `git rev-list --count HEAD` plus one). The update pop-up lists every note newer than the version on the phone.
+
 To host elsewhere at the domain root (e.g. Cloudflare Pages), build with `npm run build` and serve `dist`; no `BASE_PATH` is needed.
 
 ## Data formats

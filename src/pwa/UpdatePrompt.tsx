@@ -1,15 +1,25 @@
 import { useEffect, useState } from 'react';
 import { useRegisterSW } from 'virtual:pwa-register/react';
 import { ConfirmDialog } from '../ui/common/ConfirmDialog';
+import { notesSince, parseReleases } from './version';
 
 const CHECK_EVERY_MS = 60 * 60 * 1000;
+const MAX_NOTES = 6;
 
-/** The version on the server, which this copy of the app can't know until it asks. */
-async function fetchLatestVersion(): Promise<string | null> {
+interface Latest {
+  version: string | null;
+  notes: string[];
+}
+
+/** The version on the server and what changed since this one, which this copy of the app can't know until it asks. */
+async function fetchLatest(): Promise<Latest | null> {
   try {
     const res = await fetch(`${import.meta.env.BASE_URL}version.json`, { cache: 'no-store' });
-    const { version } = (await res.json()) as { version?: unknown };
-    return typeof version === 'string' ? version : null;
+    const { version, releases } = (await res.json()) as { version?: unknown; releases?: unknown };
+    return {
+      version: typeof version === 'string' ? version : null,
+      notes: notesSince(parseReleases(releases), __APP_VERSION__),
+    };
   } catch {
     return null;
   }
@@ -33,12 +43,12 @@ export function UpdatePrompt() {
     },
   });
   const [later, setLater] = useState(false);
-  const [latest, setLatest] = useState<string | null>(null);
+  const [latest, setLatest] = useState<Latest | null>(null);
 
   useEffect(() => {
     if (!needRefresh) return;
     let live = true;
-    void fetchLatestVersion().then((v) => { if (live) setLatest(v); });
+    void fetchLatest().then((v) => { if (live) setLatest(v); });
     return () => { live = false; };
   }, [needRefresh]);
 
@@ -50,16 +60,29 @@ export function UpdatePrompt() {
   }, []);
 
   if (!needRefresh || later) return null;
+  const version = latest?.version;
+  const notes = latest?.notes ?? [];
   return (
     <ConfirmDialog
       title="App update available"
       body={
         <>
           <p className="update__versions">
-            {latest && latest !== __APP_VERSION__ ? <>Version <strong>{latest}</strong> is ready. </> : 'A new version is ready. '}
+            {version && version !== __APP_VERSION__ ? <>Version <strong>{version}</strong> is ready. </> : 'A new version is ready. '}
             You have {__APP_VERSION__}.
           </p>
-          <p>Update now to get the latest features and fixes. Your data stays on this phone.</p>
+          {notes.length > 0 ? (
+            <div className="update__notes">
+              <h3>What's new</h3>
+              <ul>
+                {notes.slice(0, MAX_NOTES).map((n, i) => <li key={i}>{n}</li>)}
+                {notes.length > MAX_NOTES && <li>And more fixes and improvements.</li>}
+              </ul>
+            </div>
+          ) : (
+            <p className="update__versions">Update now to get the latest features and fixes.</p>
+          )}
+          <p>Your data stays on this phone.</p>
         </>
       }
       confirmLabel="Update now"

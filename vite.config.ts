@@ -19,16 +19,18 @@ function appVersion(): string {
   }
 }
 const version = appVersion();
+// Plain-language notes per release, for the update pop-up
+const releases: unknown = JSON.parse(readFileSync('src/pwa/releaseNotes.json', 'utf8'));
 
 export default defineConfig({
   base,
   plugins: [
     react(),
     {
-      // Not precached, so an older copy of the app can fetch it to name the new version
+      // Not precached, so an older copy of the app can fetch it to name the new version and what's in it
       name: 'version-file',
       generateBundle() {
-        this.emitFile({ type: 'asset', fileName: 'version.json', source: JSON.stringify({ version }) });
+        this.emitFile({ type: 'asset', fileName: 'version.json', source: JSON.stringify({ version, releases }) });
       },
     },
     VitePWA({

@@ -18,3 +18,6 @@
 .no-storage h1 { font-size: 26px; font-weight: 600; margin-bottom: 12px; }
 .no-storage p { color: var(--text-2); line-height: 1.5; }
 .update__versions { margin-bottom: 8px; }
+.update__notes { margin-bottom: 8px; padding: 10px 12px; border-radius: var(--r-control); background: var(--surface); border: 1px solid var(--line); }
+.update__notes h3 { font-size: 14px; font-weight: 600; color: var(--ink); margin-bottom: 4px; }
+.update__notes ul { margin: 0; padding-left: 18px; font-size: 14px; display: grid; gap: 4px; max-height: 40vh; overflow-y: auto; }

@@ -13,7 +13,10 @@ describe('UpdatePrompt', () => {
   beforeEach(() => {
     sw.needRefresh = false;
     sw.update.mockReset();
-    vi.stubGlobal('fetch', vi.fn(async () => new Response(JSON.stringify({ version: '1.0.99' }))));
+    vi.stubGlobal('fetch', vi.fn(async () => new Response(JSON.stringify({
+      version: '1.0.99',
+      releases: [{ version: '1.0.99', notes: ['Newest change'] }, { version: '1.0.98', notes: ['Older change'] }, { version: '0.0.1', notes: ['Already installed'] }],
+    }))));
   });
   afterEach(() => vi.unstubAllGlobals());
 
@@ -29,6 +32,14 @@ describe('UpdatePrompt', () => {
     sw.needRefresh = true;
     render(<UpdatePrompt />);
     expect(await screen.findByText(`A new version is ready. You have ${__APP_VERSION__}.`)).toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: "What's new" })).not.toBeInTheDocument();
+  });
+
+  it("lists what's new since the installed version", async () => {
+    sw.needRefresh = true;
+    render(<UpdatePrompt />);
+    expect(await screen.findByRole('heading', { name: "What's new" })).toBeInTheDocument();
+    expect(screen.getAllByRole('listitem').map((li) => li.textContent)).toEqual(['Newest change', 'Older change']);
   });
 
   it('stays hidden when the app is up to date', () => {

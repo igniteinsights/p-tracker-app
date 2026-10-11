@@ -1,0 +1,18 @@
+[
+  {
+    "version": "1.0.18",
+    "notes": ["Update messages now list what's new."]
+  },
+  {
+    "version": "1.0.17",
+    "notes": ["Update messages show the new version number. Settings shows the version you have."]
+  },
+  {
+    "version": "1.0.16",
+    "notes": ["The app checks for updates when you open it and asks before updating."]
+  },
+  {
+    "version": "1.0.15",
+    "notes": ["The calendar shows predicted periods and cycle stages six months ahead, in paler colours."]
+  }
+]
