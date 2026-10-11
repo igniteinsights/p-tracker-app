@@ -17,3 +17,4 @@
 .no-storage { max-width: 420px; margin: 0 auto; padding: calc(var(--safe-top) + 48px) var(--gutter); }
 .no-storage h1 { font-size: 26px; font-weight: 600; margin-bottom: 12px; }
 .no-storage p { color: var(--text-2); line-height: 1.5; }
+.update__versions { margin-bottom: 8px; }
