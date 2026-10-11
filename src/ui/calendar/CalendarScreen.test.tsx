@@ -49,3 +49,27 @@ describe('CalendarScreen stages', () => {
     expect(screen.getByText(/lower chance of pregnancy, not no chance/i)).toBeInTheDocument();
   });
 });
+
+describe('CalendarScreen without predictions', () => {
+  const old: Entry[] = [{ id: '1', date: '2024-02-08', type: 'period-start' }];
+  const stale: DataState = { ...data, entries: old, prediction: predict(old, DEFAULT_SETTINGS, today) };
+
+  it('asks for the latest period when history is out of date', () => {
+    render(<CalendarScreen data={stale} onOpenLog={() => {}} />);
+    expect(screen.getByRole('heading', { name: 'When did your most recent period start?' })).toBeInTheDocument();
+    expect(document.querySelectorAll('.day--predicted')).toHaveLength(0);
+  });
+
+  it('says predictions are off when Irregular cycles is on', () => {
+    const settings = { ...DEFAULT_SETTINGS, irregular: true };
+    render(<CalendarScreen data={{ ...data, settings, prediction: predict(entries, settings, today) }} onOpenLog={() => {}} />);
+    expect(screen.getByText(/Predictions are off because Irregular cycles is on/)).toBeInTheDocument();
+  });
+
+  it('shows no notice when predictions are on', () => {
+    render(<CalendarScreen data={data} onOpenLog={() => {}} />);
+    expect(screen.queryByText(/Predictions are off/)).not.toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: /most recent period/ })).not.toBeInTheDocument();
+    expect(document.querySelectorAll('.day--predicted').length).toBeGreaterThan(0);
+  });
+});

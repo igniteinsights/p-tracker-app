@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import type { ISODate } from '../../domain/dates';
 import type { DataState } from '../../data/useData';
+import { CatchUpCard } from '../today/CatchUpCard';
 import { Month } from './Month';
 import { buildCalendarIndex, monthKey, monthRange, type CalendarFilter } from './monthModel';
 import './calendar.css';
@@ -15,6 +16,16 @@ function Lazy({ children, eager }: { children: ReactNode; eager: boolean }) {
     return () => io.disconnect();
   }, [visible]);
   return <div ref={ref} className="month">{visible ? children : <div className="month__placeholder" />}</div>;
+}
+
+/** Says why the calendar has no predictions, above this month. */
+function PredictionNotice({ data }: { data: DataState }) {
+  const { prediction: p, settings, today } = data;
+  if (!p) return null;
+  if (settings.irregular) {
+    return <p className="calendar__notice">Predictions are off because Irregular cycles is on in Settings.</p>;
+  }
+  return p.stale ? <div className="calendar__catchup"><CatchUpCard lastStart={p.lastStart} today={today} /></div> : null;
 }
 
 const FILTERS: [CalendarFilter, string][] = [['all', 'All'], ['period', 'Period'], ['intimacy', 'Intimacy'], ['notes', 'Notes']];
@@ -45,6 +56,7 @@ export function CalendarScreen({ data, onOpenLog }: { data: DataState; onOpenLog
         const near = Math.abs(m.year * 12 + m.month - (Number(currentKey.slice(0, 4)) * 12 + Number(currentKey.slice(5)))) <= 3;
         return (
           <div key={key} ref={key === currentKey ? currentRef : undefined} className="calendar__anchor">
+            {key === currentKey && <PredictionNotice data={data} />}
             <Lazy eager={near}>
               <Month month={m} index={index} today={today} filter={filter} onOpenDay={onOpenLog} />
             </Lazy>

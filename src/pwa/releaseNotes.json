@@ -1,5 +1,9 @@
 [
   {
+    "version": "1.0.19",
+    "notes": ["When the calendar has no predictions, it now says why and lets you log your latest period to bring them back."]
+  },
+  {
     "version": "1.0.18",
     "notes": ["Update messages now list what's new."]
   },

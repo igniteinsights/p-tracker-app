@@ -10,6 +10,8 @@
 .cal-filter__chip--intimacy[aria-pressed='true'] { background: var(--teal); border-color: var(--teal); color: var(--on-teal); }
 .cal-filter__chip--period[aria-pressed='true'] { background: var(--berry); border-color: var(--berry); color: var(--on-berry); }
 .month { margin-bottom: 18px; }
+.calendar__notice { margin: 0 0 12px; padding: 10px 13px; border-radius: var(--r-control); background: var(--tag-bg); color: var(--text-2); font-size: 14px; line-height: 1.4; }
+.calendar__catchup .catchup { margin: 0 0 16px; }
 .month__placeholder { height: 300px; }
 .month__head { display: flex; justify-content: space-between; align-items: baseline; margin: 4px 0 8px; }
 .month__head h2 { font-size: 22px; font-weight: 600; letter-spacing: -0.01em; }
